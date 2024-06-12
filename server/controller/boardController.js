@@ -28,7 +28,7 @@ const updateBoard = expressAsyncHandler(async(req, res) =>{
     const {id} = req.query;
     const {boardTitle} = req.body;
 
-    const d = new Date();
+    const currentDate = new Date();
     console.log("**************", id);
 
     if (!boardTitle || !id) return res.json({"error" : "The fileds are mandatory is mandatory"})
@@ -37,14 +37,15 @@ const updateBoard = expressAsyncHandler(async(req, res) =>{
     try {
         const existingBoard = await knex('board').select().where({"id" : id});
         console.log(existingBoard);
-        if(existingBoard){
+        if(existingBoard == ""){
+            res.status(404).json({"error" : "The board doed not exist !!"})
+        }else{
             const updateBoard = await knex('board').where({id:id})
             .update({
                 "brd_title" : boardTitle,
-                "updated_at" : d})
+                "updated_at" : currentDate
+            })
             res.status(200).json(updateBoard)
-        }else{
-            res.status(404).json({"error" : "The board doed not exist !!"})
         }
 
     } catch (error) {
@@ -54,13 +55,16 @@ const updateBoard = expressAsyncHandler(async(req, res) =>{
 
 const deleteBoard = expressAsyncHandler(async(req, res)=>{
     const {id} = req.query;
+    const currentDate = new Date();
+
 
     if (!id) return res.json({"error" : "Id is expected to find Board"})
     console.log("**********************",id);
 
     try {
         const deleteBoard = await knex('board').where({id:id}).update({
-            "delete_flag" : 1
+            "delete_flag" : 1,
+            "updated_at" : currentDate
         })
         res.status(200).json({"status" : "The Board deleted Successfully"})
     } catch (error) {
@@ -68,4 +72,26 @@ const deleteBoard = expressAsyncHandler(async(req, res)=>{
     }
 })
 
-module.exports = { getBoard, createBoard, updateBoard, deleteBoard };
+const updateListOrder = expressAsyncHandler(async(req, res)=>{
+    const {id} = req.query;
+    const {listOrder} = req.body;
+    const currentDate = new Date();
+    
+    try {
+        const existingBoard = await knex('board').select().where({"id" : id});
+        if (existingBoard == "") {
+            res.json({"Error" : "Board cant be Found"});
+        }else{
+            const updateBoard = await knex('board').where({id:id})
+            .update({
+                "list_order": listOrder,
+                "updated_at" : currentDate
+            });
+            res.status(200).json(updateBoard);
+        }
+    } catch (error) {
+        res.json(error);
+    }
+})
+
+module.exports = { getBoard, createBoard, updateBoard, deleteBoard, updateListOrder };

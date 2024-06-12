@@ -39,7 +39,7 @@ const updateList = expressAsyncHandler(async(req, res) =>{
 
     if (!listTitle) return res.status(404).json({"error" : "all field are mandatory"});
 
-    const d = new Date();
+    const currentDate = new Date();
 
     const existingList = await knex('list').select().where({"id" : id});
     try{
@@ -49,7 +49,7 @@ const updateList = expressAsyncHandler(async(req, res) =>{
         if(existingList){
             const updatedList = await knex('list').where({"id":id}).update({
                 "list_title" : listTitle,
-                "updated_at" : d
+                "updated_at" : currentDate
             })
             res.status(200).json(updatedList);
         }
@@ -60,12 +60,17 @@ const updateList = expressAsyncHandler(async(req, res) =>{
 
 const deleteList = expressAsyncHandler(async(req, res) =>{
     const {id} = req.query;
+    const currentDate = new Date();
+
 
     const existingList = await knex('list').select().where({"id" : id});
     try{
 
         if(existingList){
-            const updatedList = await knex('list').where({"id":id}).update({"delete_flag" : 1})
+            const updatedList = await knex('list').where({"id":id}).update({
+                "delete_flag" : 1,
+                "updated_at" : currentDate
+            })
             res.status(200).json(updatedList);
         }
     } catch (error) {
@@ -73,4 +78,26 @@ const deleteList = expressAsyncHandler(async(req, res) =>{
     }
 })
 
-module.exports = { getList, createList, updateList, deleteList};
+const updatecardOrder = expressAsyncHandler(async(req, res)=>{
+    const {id} = req.query;
+    const {cardOrder} = req.body;
+    const currentDate = new Date();
+    
+    try {
+        const existingBoard = await knex('list').select().where({"id" : id});
+        if (existingBoard == "") {
+            res.json({"Error" : "list cant be Found"});
+        }else{
+            const updateBoard = await knex('list').where({id:id})
+            .update({
+                "card_order": cardOrder,
+                "updated_at" : currentDate
+            });
+            res.status(200).json(updateBoard);
+        }
+    } catch (error) {
+        res.json(error);
+    }
+})
+
+module.exports = { getList, createList, updateList, deleteList, updatecardOrder};
