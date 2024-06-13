@@ -1,39 +1,84 @@
+const { json } = require('express');
 const knex = require('../knex/knexfile')
-const expressAsyncHandler = require("express-async-handler");
-
 
 // card Controles
 
-const getCard = expressAsyncHandler(async(req, res)=>{
+const getCard = async(req, res)=>{
     try {
         const cards = await knex('card').select();
         res.status(200).json(cards);
     } catch (error) {
         res.json(error);
     }
-})
+}
 
-const createCard = expressAsyncHandler(async(req, res) =>{
-    const {discussion, listId} = req.body;
-
+const createCard = async(req, res) =>{
+    
     try {
+        const {discussion, listId, cardTitle} = req.body;
         const createdcard = await knex('card').insert({
             "discussion" : discussion,
+            "card_title" : cardTitle,
             "list_id" : listId
         });
-        res.status(200).json(createdcard);
+        const getid = await knex('card').select('id').where({
+            "discussion" : discussion,
+            "card_title" : cardTitle,
+            "list_id" : listId
+        })
+        const cardId = getid[0].id; // card ID
+        console.log("cardID : ",cardId);
+
+        const getcardorder = await knex('list').select('card_order').where({"id" : listId});
+
+        const arr = JSON.parse(getcardorder[0].card_order);
+        console.log("existing array : ", arr); // card ORder
+        if (arr != null || arr == "") {
+            const updatedarray = [...arr, cardId];
+    
+            const cardArray = await knex('list').where({"id":listId}).update({
+                "card_order" : JSON.stringify(updatedarray)
+            });
+        }else{
+            const newcard = [cardId];
+            const cardArray = await knex('list').where({"id":listId}).update({
+                "card_order" : JSON.stringify(newcard)
+            });
+            res.json({"status":"new card created"})
+        }
+
+
+
+        res.json({"status" : "card created"});
     } catch (error) {
         res.json(error);
     }
-    res.json({"status" : "working"});
-})
+}
 
-const updateCard = expressAsyncHandler(async(req, res) =>{
-    const {id} = req.query;
-    const {discussion} = req.body;
-    const currentDate = new Date();
+const cardInterchange = async(req, res)=>{
+    try {
+        const {id, listId} = req.body;
+        const updatedChange = await knex('card').where({"id" : id}).update({
+            "list_id" : listId
+        })
+        const listOrder = await knex('list').select('card_order').where({"id":id});
+        const array = JSON.parse(listOrder[0].card_order); 
+        const updatedarray = [id, ...array];
+        console.log(updatedarray);
+        const updatelistOrder = await knex('list').where({"id":id}).update({
+            "card_order" : JSON.stringify(updatedarray)
+        })
+        res.status(200).json(updatedChange);
+    } catch (error) {
+        res.json(error);
+    }
+}
+
+const updateCard = async(req, res) =>{
 
     try {
+        const {id, discussion} = req.body;
+        const currentDate = new Date();
         const existingcard = await knex('card').select().where({"id" : id});
         console.log(existingcard);
         if(existingcard){
@@ -46,13 +91,15 @@ const updateCard = expressAsyncHandler(async(req, res) =>{
     } catch (error) {
         res.json(error);
     }
-})
+}
 
-const deleteCard = expressAsyncHandler(async(req, res)=>{
-    const {id} = req.query;
-    const currentDate = new Date();
-    console.log("delete", id);
+
+
+const deleteCard = async(req, res)=>{
+    
     try {
+        const {id} = req.query;
+        const currentDate = new Date();
         const existingcard = await knex('card').select().where({"id" : id});
         if (existingcard) {
             const updatedCard = await knex('card').where({"id":id}).update({
@@ -64,31 +111,28 @@ const deleteCard = expressAsyncHandler(async(req, res)=>{
     } catch (error) {
         res.json(error)
     }
-})
+}
 
 // Cmt Controller
 
-const getComment = expressAsyncHandler(async(req, res)=>{
-    const {id} = req.query;
-    if (!id) {
-        res.status(200).json({"Error" : "no card found to cmt"});
-    }
+const getComment = async(req, res)=>{
     try {
+        const {id} = req.query;
+        if (!id) res.status(200).json({"Error" : "no card found to cmt"});
         const comments = await knex('cmt').select().where({"card_id":id});
         res.status(200).json(comments);
     } catch (error) {
         res.json(error);
     }
-})
+}
 
-const createComment = expressAsyncHandler(async(req, res)=>{
-    const {id} = req.query;
-    const {comment} = req.body;
-    if (!id) res.status(200).json({"Error" : "no card found to cmt"});
-    if (!comment) res.status(200).json({"Error" : "Enter a Comment"});
+const createComment = async(req, res)=>{
 
     try {
-    const existingcard = await knex('card').select().where({"id" : id});
+        const {id, comment} = req.body;
+        if (!id) res.status(200).json({"Error" : "no card found to cmt"});
+        if (!comment) res.status(200).json({"Error" : "Enter a Comment"});
+        const existingcard = await knex('card').select().where({"id" : id});
         if (existingcard == "") {
             res.status(404).json({"Error" : "card not found"})
         } else {
@@ -101,14 +145,13 @@ const createComment = expressAsyncHandler(async(req, res)=>{
     } catch (error) {
         res.json(error);
     }
-})
+}
 
-const updateComment = expressAsyncHandler(async(req, res)=>{
-    const {id} = req.query;
-    const {commentid, comment} = req.body;
-    const currentDate = new Date();
+const updateComment = async(req, res)=>{
 
     try {
+        const {id, commentid, comment} = req.body;
+        const currentDate = new Date();
         const existingcard = await knex('card').select().where({"id" : id});
         const existingcmt = await knex('cmt').select().where({"id" : id});
         if (existingcard == "" || existingcmt == "") {
@@ -123,14 +166,14 @@ const updateComment = expressAsyncHandler(async(req, res)=>{
     } catch (error) {
         res.json(error);
     }
-})
+}
 
-const deleteComment = expressAsyncHandler(async(req, res)=>{
-    const {id} = req.query;
-    const {commentid} = req.body;
-    const currentDate = new Date();
+const deleteComment = async(req, res)=>{
 
     try {
+        const {id} = req.query;
+        const {commentid} = req.body;
+        const currentDate = new Date();
         const existingcard = await knex('card').select().where({"id" : id});
         const existingcmt = await knex('cmt').select().where({"id" : id});
 
@@ -147,8 +190,13 @@ const deleteComment = expressAsyncHandler(async(req, res)=>{
     } catch (error) {
         res.json(error);
     }
-})
+}
 
-module.exports = { getCard, createCard, updateCard, deleteCard,
+module.exports = { getCard, createCard, updateCard, deleteCard, cardInterchange,
                     getComment, createComment, updateComment, deleteComment
 };
+
+
+
+
+

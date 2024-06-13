@@ -1,21 +1,18 @@
 const express = require('express');
 const route = express.Router();
-const { getCard, createCard, updateCard, deleteCard,
-        getComment, createComment,
-        updateComment,
-        deleteComment
- } = require("../controller/cardController");
+const cardController = require("../controller/cardController");
 
 // card Routes
-route.get('/getcard', getCard);
-route.post('/createcard', createCard);
-route.put('/updatecard', updateCard);
-route.delete('/deletecard', deleteCard);
+route.get('/getcard', cardController.getCard);
+route.post('/createcard', cardController.createCard);
+route.put('/updatecard', cardController.updateCard);
+route.put('/cardinterchange', cardController.cardInterchange);
+route.delete('/deletecard', cardController.deleteCard);
 
 // cmt Routes
-route.get('/getcmt', getComment);
-route.post('/createcmt', createComment);
-route.put('/updatecmt', updateComment);
-route.delete('/deletecmt', deleteComment);
+route.get('/getcmt', cardController.getComment);
+route.post('/createcmt', cardController.createComment);
+route.put('/updatecmt', cardController.updateComment);
+route.delete('/deletecmt', cardController.deleteComment);
 
 module.exports = route;

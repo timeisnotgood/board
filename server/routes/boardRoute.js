@@ -1,11 +1,11 @@
 const express = require('express');
 const route = express.Router();
-const { getBoard, createBoard, updateBoard, deleteBoard, updateListOrder } = require('../controller/boardController')
+const boardController = require('../controller/boardController')
 
-route.get('/getboard', getBoard);
-route.post('/createboard', createBoard);
-route.put('/updateboard', updateBoard);
-route.put('/updatelistorder', updateListOrder);
-route.delete('/deleteboard', deleteBoard);
+route.get('/getboard', boardController.getBoard);
+route.post('/createboard', boardController.createBoard);
+route.put('/updateboard', boardController.updateBoard);
+route.put('/updatelistorder', boardController.updateListOrder);
+route.delete('/deleteboard', boardController.deleteBoard);
 
 module.exports = route

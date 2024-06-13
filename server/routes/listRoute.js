@@ -1,11 +1,11 @@
 const express = require('express');
 const route = express.Router();
-const { getList, createList, updateList, deleteList, updatecardOrder } = require("../controller/listController");
+const listController = require("../controller/listController");
 
-route.get('/getlist', getList);
-route.post('/createlist', createList);
-route.put('/updatelist', updateList);
-route.put('/updatecardorder', updatecardOrder);
-route.delete('/deletelist', deleteList);
+route.get('/getlist', listController.getList);
+route.post('/createlist', listController.createList);
+route.put('/updatelist', listController.updateList);
+route.put('/updatecardorder', listController.updatecardOrder);
+route.delete('/deletelist', listController.deleteList);
 
 module.exports = route;
