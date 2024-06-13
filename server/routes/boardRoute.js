@@ -2,6 +2,7 @@ const express = require('express');
 const route = express.Router();
 const boardController = require('../controller/boardController')
 
+route.get('/getallboard', boardController.getallBoards);
 route.get('/getboard', boardController.getBoard);
 route.post('/createboard', boardController.createBoard);
 route.put('/updateboard', boardController.updateBoard);

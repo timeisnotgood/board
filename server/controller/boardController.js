@@ -1,43 +1,67 @@
 const knex = require('../knex/knexfile')
 
-const getBoard = async(req, res) =>{
-    try {
-      // const boards = await knex('board as brd')
-      // .select(
-      //   'brd.brd_title',
-      //   knex.raw('(SELECT COUNT(*) FROM list WHERE list.brd_id = brd.id) as list_count')
-      // );
-      
-      // console.log(boards);
-      // res.status(200).json(boards);
-        const boards = 
-        await knex('board as brd')
-            .select(
-                'brd.brd_title',
-                'brd.list_order',
-                'lst.list_title',
-                'lst.card_order',
-                'crd.card_title',
-            )
-            .leftJoin('list as lst', function () {
-                this.on('brd.id', '=', 'lst.brd_id');
-            })
-            .leftJoin('card as crd', function () {
-                this.on('lst.id', '=', 'crd.list_id');
-            })
-            .where({'brd.delete_flag' : 0});
+const getallBoards = async(req, res) =>{
+  const boards = await knex('board').select('brd_title').where({"delete_flag" : 0});
+  res.status(200).json(boards);
+}
 
-        const nestedData = transformToNested(boards);
-        // console.log(JSON.stringify(nestedData, null, 2));
-        // console.log(boards);
-        res.status(200).json(nestedData)
-        // const boards = await knex('board').select().where({delete_flag : 0});
-        // console.log(boards);
-        // res.status(200).json(boards)
-    } catch (error) {
-        console.log("sfsfds",error);
-        res.json(error)
-    }
+// const getBoard = async(req, res) =>{
+//     try {
+//       const {id} = req.query;
+//         const boards = 
+//         await knex('board as brd')
+//             .select(
+//                 'brd.brd_title',
+//                 'brd.list_order',
+//                 'lst.list_title',
+//                 'lst.card_order',
+//                 'crd.card_title',
+//             ).where({"brd.id":id})
+//             .leftJoin('list as lst', function () {
+//                 this.on('brd.id', '=', 'lst.brd_id');
+//             })
+//             .leftJoin('card as crd', function () {
+//                 this.on('lst.id', '=', 'crd.list_id');
+//             })
+//             .where({'brd.delete_flag' : 0});
+
+//         const nestedData = transformToNested(boards);
+//         console.log(JSON.stringify(nestedData, null, 2));
+//         console.log(boards);
+//         res.status(200).json(nestedData)
+
+//     } catch (error) {
+//         console.log("sfsfds",error);
+//         res.json(error)
+//     }
+// }
+
+const getBoard = async(req,res)=>{
+  try {
+    const {id} = req.query;
+    const board = await knex('board').select('list_order').where({"id":id});
+    const boards = 
+            await knex('board as b')
+            .select(
+              'b.brd_title',
+              'l.list_title',
+              'c.card_title',
+              knex('list').select('list_title').as('list'))
+            .leftJoin('list as l', function () {
+               this.on('b.id', '=', 'l.brd_id');
+             })
+            .leftJoin('card as c', function () {
+               this.on('l.id', '=', 'c.list_id');
+             })
+            .where('b.id',id) 
+            .orderBy('b.id', 'ASC')
+            .orderBy('b.list_order', 'ASC')
+            .orderBy('l.card_order', 'ASC');
+            res.json(boards)
+
+  } catch (error) {
+    res.json(error);
+  }
 }
 
 function transformToNested(data) {
@@ -147,14 +171,50 @@ const deleteBoard = async(req, res)=>{
         if (!id) return res.json({"error" : "Id is expected to find Board"})
         const deleteBoard = await knex('board').where({id:id}).update({
             "delete_flag" : 1,
-            "updated_at" : currentDate
+            "deleted_at" : currentDate
         })
         const deletelist = await knex('list').where({"brd_id":id}).update({
           "delete_flag" : 1,
-          "updated_at" : currentDate
-      })
-      // const deletecard = await knex('card').where
-        res.status(200).json({"status" : "The Board deleted Successfully"})
+          "deleted_at" : currentDate
+          })
+          
+          const list = await knex('list').select('id').where({"brd_id":id});
+          const ids = list.map(({ id }) => id);
+          console.log(ids);
+
+          const card = await knex('card').whereIn('list_id',ids).update({
+            "delete_flag" : 0,
+            "deleted_at" :currentDate
+          });
+
+          // not working
+
+          console.log("************************");
+          const cardlist = await knex('card').select('id').whereIn('list_id' , ids)
+          const cds = cardlist.map(({ id }) => id);
+          console.log("*********",cds);
+
+          const cmt = await knex('cmt').whereIn('card_id', cds).update({
+            "delete_flag" : 0,
+            "deleted_at" :currentDate
+          })
+
+
+        // for (let i = 0;  i< list.length; i++) {
+        //   console.log(list[i].id);
+        //   const card = await knex('card').where({"list_id":list[i].id}).update({
+        //       "delete_flag" : 1,
+        //       "deleted_at" : currentDate
+        //   })
+        // const cardid = await knex('card').select('id').where({"list_id":id});
+        // for (let j = 0; j < array.length; j++) {
+        //   const cmt = await knex('cmt').where({"card_id" : cardid[i].id}).update({
+        //     "delete_flag" : 1,
+        //     "deleted_at" : currentDate
+        //   })          
+        // }
+        // }
+        res.status(200).json(list)
     } catch (error) {
         res.json(error)
     }
@@ -181,4 +241,4 @@ const updateListOrder = async(req, res)=>{
 }
 
 
-module.exports = { getBoard, createBoard, updateBoard, deleteBoard, updateListOrder };
+module.exports = { getBoard, createBoard, updateBoard, deleteBoard, updateListOrder, getallBoards };
