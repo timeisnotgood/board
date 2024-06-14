@@ -5,130 +5,44 @@ const getallBoards = async(req, res) =>{
   res.status(200).json(boards);
 }
 
-// const getBoard = async(req, res) =>{
-//     try {
-//       const {id} = req.query;
-//         const boards = 
-//         await knex('board as brd')
-//             .select(
-//                 'brd.brd_title',
-//                 'brd.list_order',
-//                 'lst.list_title',
-//                 'lst.card_order',
-//                 'crd.card_title',
-//             ).where({"brd.id":id})
-//             .leftJoin('list as lst', function () {
-//                 this.on('brd.id', '=', 'lst.brd_id');
-//             })
-//             .leftJoin('card as crd', function () {
-//                 this.on('lst.id', '=', 'crd.list_id');
-//             })
-//             .where({'brd.delete_flag' : 0});
-
-//         const nestedData = transformToNested(boards);
-//         console.log(JSON.stringify(nestedData, null, 2));
-//         console.log(boards);
-//         res.status(200).json(nestedData)
-
-//     } catch (error) {
-//         console.log("sfsfds",error);
-//         res.json(error)
-//     }
-// }
-
-const getBoard = async(req,res)=>{
+const getBoard = async(req, res) =>{
   try {
     const {id} = req.query;
-    const board = await knex('board').select('list_order').where({"id":id});
-    const boards = 
-            await knex('board as b')
-            .select(
-              'b.brd_title',
-              'l.list_title',
-              'c.card_title',
-              knex('list').select('list_title').as('list'))
-            .leftJoin('list as l', function () {
-               this.on('b.id', '=', 'l.brd_id');
-             })
-            .leftJoin('card as c', function () {
-               this.on('l.id', '=', 'c.list_id');
-             })
-            .where('b.id',id) 
-            .orderBy('b.id', 'ASC')
-            .orderBy('b.list_order', 'ASC')
-            .orderBy('l.card_order', 'ASC');
-            res.json(boards)
+      const boards = 
+      await knex('board as brd')
+      .where({"brd.id":id})
+          .select(
+              'brd.brd_title',
+              'brd.list_order',
+              knex.raw(` JSON_ARRAYAGG(JSON_OBJECT(
+                'list_title', lst.list_title,
+                'card_order',lst.card_order,
+                'cards', (
+                    SELECT JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'card_title', crd.card_title
+                        )
+                    )
+                    FROM card crd
+                    WHERE crd.list_id = lst.id
+                    ORDER BY lst.card_order
+                )
+               )) AS list`)
+          )
+          .leftJoin('list as lst', function () {
+              this.on('brd.id', '=', 'lst.brd_id');
+          })
+          .groupBy('brd.id')          
+          .where({'brd.delete_flag' : 0});
+
+      console.log(boards);
+      res.status(200).json(boards)
 
   } catch (error) {
-    res.json(error);
+      console.log("sfsfds",error);
+      res.json(error)
   }
 }
-
-function transformToNested(data) {
-    const result = [];
-  
-    data.forEach(row => {
-      let board = result.find(b => b.board_id === row.board_id);
-      if (!board) {
-        board = {
-          brd_title: row.brd_title,
-          list_order: row.list_order,
-          lists: []
-        };
-        result.push(board);
-      }
-  
-      if (row.list_id) {
-        let list = board.lists.find(l => l.list_id === row.list_id);
-        if (!list) {
-          list = {
-            list_title: row.list_title,
-            card_order: row.card_order
-          };
-          board.lists.push(list);
-        }
-      }
-    });
-  
-    return result;
-  }
-
-  function transformToNested(data) {
-    const result = [];
-  
-    data.forEach(row => {
-      // Find or create the board
-      let board = result.find(b => b.brd_title === row.brd_title);
-      if (!board) {
-        board = {
-          brd_title: row.brd_title,
-          list_order: JSON.parse(row.list_order),
-          lists: []
-        };
-        result.push(board);
-      }
-  
-      // Find or create the list
-      let list = board.lists.find(l => l.list_title === row.list_title);
-      if (!list) {
-        list = {
-          list_title: row.list_title,
-          card_order: row.card_order ? JSON.parse(row.card_order) : [],
-          cards: []
-        };
-        board.lists.push(list);
-      }
-  
-      // Add the card to the list
-      if (row.card_title) {
-        list.cards.push({
-          card_title: row.card_title
-        });
-      }
-    });
-  
-    return result;
-  }
 
 const createBoard = async(req, res)=>{
     try {
