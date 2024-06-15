@@ -18,11 +18,7 @@ const getBoard = async(req, res) =>{
                 'list_title', lst.list_title,
                 'card_order',lst.card_order,
                 'cards', (
-                    SELECT JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'card_title', crd.card_title
-                        )
-                    )
+                    SELECT JSON_ARRAYAGG(crd.card_title)
                     FROM card crd
                     WHERE crd.list_id = lst.id
                     ORDER BY lst.card_order
@@ -112,22 +108,6 @@ const deleteBoard = async(req, res)=>{
             "delete_flag" : 0,
             "deleted_at" :currentDate
           })
-
-
-        // for (let i = 0;  i< list.length; i++) {
-        //   console.log(list[i].id);
-        //   const card = await knex('card').where({"list_id":list[i].id}).update({
-        //       "delete_flag" : 1,
-        //       "deleted_at" : currentDate
-        //   })
-        // const cardid = await knex('card').select('id').where({"list_id":id});
-        // for (let j = 0; j < array.length; j++) {
-        //   const cmt = await knex('cmt').where({"card_id" : cardid[i].id}).update({
-        //     "delete_flag" : 1,
-        //     "deleted_at" : currentDate
-        //   })          
-        // }
-        // }
         res.status(200).json(list)
     } catch (error) {
         res.json(error)
