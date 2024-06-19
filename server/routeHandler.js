@@ -15,5 +15,8 @@ app.use('/list', require("./routes/listRoute"));
 // card Routes --**--
 app.use('/card', require("./routes/cardRoute"));
 
+// user Routes --**--
+app.use('/user', require("./routes/userRouter"));
+
 
 module.exports = {app};

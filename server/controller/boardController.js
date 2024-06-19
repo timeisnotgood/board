@@ -1,12 +1,19 @@
 const knex = require('../knex/knexfile')
 
 const getallBoards = async(req, res) =>{
-  const boards = await knex('board').select('brd_title').where({"delete_flag" : 0});
-  res.status(200).json(boards);
+    try {
+        console.log("*********",req.user);
+
+        const boards = await knex('board').select('brd_title').where({"delete_flag" : 0});
+        res.status(200).json(boards);
+    } catch (error) {
+        res.json(error);
+    }
 }
 
 const getBoard = async(req, res) =>{
   try {
+
     const {id} = req.query;
       const boards = 
       await knex('board as brd')
@@ -31,7 +38,7 @@ const getBoard = async(req, res) =>{
           .groupBy('brd.id')          
           .where({'brd.delete_flag' : 0});
 
-      console.log(boards);
+    //   console.log(boards);
       res.status(200).json(boards)
 
   } catch (error) {
@@ -96,10 +103,9 @@ const deleteBoard = async(req, res)=>{
             "delete_flag" : 0,
             "deleted_at" :currentDate
           });
-
           // not working
 
-          console.log("************************");
+        //   console.log("************************");
           const cardlist = await knex('card').select('id').whereIn('list_id' , ids)
           const cds = cardlist.map(({ id }) => id);
           console.log("*********",cds);

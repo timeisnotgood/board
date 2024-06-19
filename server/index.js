@@ -3,7 +3,7 @@ const knex = require('./knex/knexfile');
 const {app} = require('./routeHandler')
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 async function checkConnection() {
     try {
       await knex.raw('SELECT 1+1 as result');
