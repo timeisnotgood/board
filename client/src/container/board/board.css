@@ -1,0 +1,26 @@
+.board{
+    height: 100vh;
+}
+
+.boardnav{
+    padding: 20px 25px;
+    height: 40px;
+}
+
+.boardname{
+    margin-left: 30px;
+}
+
+.boardactions{
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    justify-content: end;
+}
+
+.boarddd{
+    width: 150px;
+    border-radius: 8px;
+    border-color: #bdbdbd;
+    text-align: center;
+}

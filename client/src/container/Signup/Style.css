@@ -1,0 +1,37 @@
+.maincont{
+    height: 100vh;
+    /* background-color: #080e1c ; */
+}
+
+.formcont{
+    /* border: 1px solid black; */
+    margin-top: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    height: 450px;
+}
+
+.brand{
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.card{
+    /* border: 1px solid black; */
+    width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+.input{
+    width: 400px;
+}
+
+.cardactins{
+    display: flex;
+    font-display: row;
+    gap: 10px;
+}
