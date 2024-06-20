@@ -2,6 +2,8 @@ import React from 'react'
 // import { Button, Grid, Stack, Typography } from '@mui/material'
 // import AddIcon from '@mui/icons-material/Add';
 import './board.css'
+import { Button, Grid, Typography } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add';
 // import DropDownMenu from 'material-ui/DropDownMenu';
 // import Select from '@material-ui/core/Select';
 
@@ -13,7 +15,7 @@ const Board = () => {
   return (
     <section className='board'>
         <nav className='boardnav'>
-            {/* <Grid container spacing={1}>
+            <Grid container spacing={1}>
                 <Grid item xs={6} className='boardname'>
                     <Typography variant='h5'>flow one Copy</Typography>
                 </Grid>
@@ -24,11 +26,11 @@ const Board = () => {
                         <option>one</option>
                         <option>one</option>
                     </select>
-                    <Button variant='contained' size='small' style={{width:'fit-content'}}>
-                        <AddIcon/>
-                    </Button>
+                    <AddIcon size='medium' style={{backgroundColor:'blue'}}/>
+                    {/* <Button variant='contained' size='small' style={{width:'fit-content'}}>
+                    </Button> */}
                 </Grid>
-            </Grid> */}
+            </Grid>
         </nav>
     </section>
   )

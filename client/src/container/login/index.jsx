@@ -8,9 +8,16 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import './style.css'
+import { setaccesstoken } from '../../redux/actions'
+import { useDispatch } from 'react-redux';
+import { jwtDecode } from 'jwt-decode';
+
+
 
 export const Login = () => {
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     email :'',
     password :'',
@@ -62,7 +69,6 @@ export const Login = () => {
 
   const handleSubmit = async(event) => {
     event.preventDefault();
-    console.log(data);
 
     const logindata = await axios.post(`http://localhost:5000/user/login`,{
       'email' : data.email,
@@ -72,9 +78,15 @@ export const Login = () => {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
         }
+    }).then((data)=>{
+      console.log(data.data.accesstoken);
+      const token = data.data.accesstoken
+      localStorage.setItem('accesstoken', token)
+      const userdata = jwtDecode(token);
+      console.log(userdata.user);
+      dispatch(setaccesstoken(userdata.user))
+      navigate("/")
     })
-
-    console.log(logindata); 
   };
 
   const handelshowpassword = () => {
@@ -84,6 +96,7 @@ export const Login = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  
   return (
 <div className='maincont'>
         <Grid className='formcont'>
@@ -120,7 +133,8 @@ export const Login = () => {
                     placeholder='Password'
                     variant='outlined'
                     className='input'
-                    type={showpass.password ? 'text' :"password"}
+                    // type='text'
+                    type={showpass.password ? 'text' :'password'}
                     name="password"
                     value={data.password}
                     onChange={handleChange}
