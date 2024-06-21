@@ -17,6 +17,10 @@
     text-transform: inherit !important;
 }
 
+/* .logotext{
+    display: none;
+} */
+
 .logospan{
     display: flex;
     flex-direction: row;
@@ -43,3 +47,18 @@ color: #1976d2;
 .iconpath.active{
     stroke: inherit;
 }
+
+.setting{
+    /* border: 1px solid black; */
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: end;
+}
+
+
+@media (max-width: 500px) {
+    .logotext{
+      display: none;
+    }
+  }

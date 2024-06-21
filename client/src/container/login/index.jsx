@@ -5,10 +5,10 @@ import MailOutlinedIcon from '@material-ui/icons/MailOutlined';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useLocation} from 'react-router-dom'
 import axios from 'axios'
 import './style.css'
-import { setaccesstoken } from '../../redux/actions'
+import { setaccesstoken, setboarddata } from '../../redux/actions'
 import { useDispatch } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 
@@ -18,10 +18,15 @@ export const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [data, setData] = useState({
     email :'',
     password :'',
   });
+
+  const token = localStorage.getItem('accesstoken');
+  // if (!token) navigate('/')
+  console.log("******", token);
 
   const [touched, setTouched] = useState({
     email: false,
@@ -78,14 +83,24 @@ export const Login = () => {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
         }
-    }).then((data)=>{
+    }).then(async(data)=>{
       console.log(data.data.accesstoken);
       const token = data.data.accesstoken
       localStorage.setItem('accesstoken', token)
       const userdata = jwtDecode(token);
-      console.log(userdata.user);
-      dispatch(setaccesstoken(userdata.user))
-      navigate("/")
+      console.log(userdata.user.id);
+      const userrelatedboards = await axios.get(`http://localhost:5000/board/getboard/${userdata.user.id}`,{
+      headers:{
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization' : token
+      }
+    })
+    console.log("**********",userrelatedboards.data);
+    // console.log(userdata.user);
+    dispatch(setaccesstoken(userdata.user))
+    dispatch(setboarddata(userrelatedboards.data))
+    navigate("/")
     })
   };
 

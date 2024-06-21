@@ -1,7 +1,7 @@
 import { combineReducers, createStore } from "redux";
-import {tokenReducer} from "./reducer"
+import {tokenReducer, boardReducer} from "./reducer"
 
-const rootReducer = combineReducers({auth : tokenReducer})
+const rootReducer = combineReducers({auth : tokenReducer, boarddata : boardReducer})
 
 const store = createStore(rootReducer);
 

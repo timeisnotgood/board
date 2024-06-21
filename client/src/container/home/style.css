@@ -8,5 +8,125 @@
     width: 100%;
     height: 100%;
     background-color: #F4F6F9;
-    ;
+    display: flex;
+    flex-direction: column;
+}
+
+.body{
+    /* border: 1px solid black; */
+    position: relative;
+    margin-top: 5px;
+    height: 90%;
+    padding: 5px;
+}
+
+.bodycontainer{
+    /* border: 1px solid black; */
+    padding: 10px;
+    overflow: hidden;
+    height: 250px;
+}
+
+.containertext{
+    /* border: 1px solid black; */
+    height: 100%;
+    border-radius: 12px;
+    background-color: white;
+    /* box-sizing: border-box; */
+    padding: 5px;
+    overflow: hidden;
+}
+
+.firstcontainer{
+    /* border: 1px solid black; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #19A9FC;
+    /* color: linear-gradient(90deg, #5351FC 0%, #19A9FC 100%); */
+
+}
+
+.secondcontainer{
+    padding: 5px 25px;
+}
+
+.secondcontainer h4{
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.secondcontainer p{
+    font-size: 20px;
+}
+
+.thirdcontainer{
+    padding: 0px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.thirdcontainer h4{
+    font-weight: 600;
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.648);
+}
+
+.thirdcontainer p{
+    margin-left: 20px;
+    color: rgba(128, 128, 128, 0.733);
+    font-weight: 700;
+}
+
+.fourthcontainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 30px;
+    height: 100%;
+}
+
+.dropdown{
+    position: absolute;
+    z-index: 1;
+    right: 30px;
+    top: 60px;
+    width: 230px;
+    height: 94px;
+    padding: 15px 10px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.innerdropdown{
+    /* border: 1px solid black; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 50px;
+    gap: 20px;
+    padding: 1px 12px;
+    background-color: #F4F6F9;
+    border-radius: 12px;
+}
+
+.userdata p{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.735);
+}
+
+.innerthirdcontainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
