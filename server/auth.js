@@ -8,7 +8,7 @@ function authenticate(req, res, next) {
       }
       const decoded = jwt.decode(token, process.env.your_jwt_secret_key);
 
-      console.log(decoded.user.id);
+      // console.log(decoded.user.id);`
       req.user = decoded.user.id;
       next();
     } catch (ex) {

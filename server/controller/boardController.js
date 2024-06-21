@@ -14,12 +14,14 @@ const getallBoards = async(req, res) =>{
 const getBoard = async(req, res) =>{
   try {
 
-    const {id} = req.query;
+    const {id} = req.params;
+    console.log("*****************",id);
       const boards = 
       await knex('board as brd')
-      .where({"brd.id":id})
+      .where({"brd.create_by":id})
           .select(
               'brd.brd_title',
+              'brd.created_at',
               'brd.list_order',
               knex.raw(` JSON_ARRAYAGG(JSON_OBJECT(
                 'list_title', lst.list_title,
@@ -38,7 +40,7 @@ const getBoard = async(req, res) =>{
           .groupBy('brd.id')          
           .where({'brd.delete_flag' : 0});
 
-    //   console.log(boards);
+    //   console.log("******************",boards);
       res.status(200).json(boards)
 
   } catch (error) {
@@ -49,9 +51,9 @@ const getBoard = async(req, res) =>{
 
 const createBoard = async(req, res)=>{
     try {
-        const {boardTitle} = req.body;
+        const {boardTitle, userId} = req.body;
         if (!boardTitle) return res.json({"error" : "The Title is mandatory"})
-        const createBoard = await knex('board').insert({"brd_title" : boardTitle})
+        const createBoard = await knex('board').insert({"brd_title" : boardTitle, "create_by" : userId})
         if(createBoard) res.status(200).json({"Status" : "Board created Success fully"})
     } catch (error) {
         res.json(error)
