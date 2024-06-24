@@ -3,31 +3,69 @@ import React, { useState } from 'react'
 import { ReactComponent as Dasicon } from './img/layout-grid.svg';
 import { ReactComponent as Foldericon } from './img/folder-plus.svg';
 import SettingsIcon from '@material-ui/icons/Settings';
-import {useNavigate, useLocation} from 'react-router-dom'
+import {useNavigate, useLocation, Link} from 'react-router-dom'
+import { useSelector} from 'react-redux'
+import { ReactComponent as Setting} from './img/setting.svg'
+import { ReactComponent as Boards } from './img/board.svg'
+
+
 import logo from './img/logo.png'
 import './style.css'
 
-const Nav = ({isDropdown, dropdownhandler}) => {
+const Nav = () => {
+
+  const navigate = useNavigate();
+
+    // Logout Handler
+    const logoutHandler = () =>{
+      localStorage.removeItem('accesstoken');
+      navigate('/login');
+    }
 
   // for Routing buttons 
 
   const [activebutton, setactivebutton] = useState('')
   const location = useLocation();
 
-  console.log("location", location.pathname);
 
   const activebuttonHandler = (e) =>{
     setactivebutton(e);
   }
-  console.log(activebutton);
 
+  //------------------------------
+  const [isDropdown, setisDropdown] = useState(false);
+
+  const dropdownhandler = (data) =>{
+    setisDropdown(data);
+  };
+
+
+   // user data --------------------
+   const userdata = useSelector(s => s)
   //------------------------------
 
   // for setting button
-  // console.log(isDropdown);
   //------------------------------
   return (
     <Grid container className='navbar'>
+            {isDropdown &&
+          <div className='dropdown' >
+            <div className='innerdropdown'>
+              <div className='usericon'>
+                <svg width="30px" height="20px" viewBox="0 0 1024 1024" class="icon"  version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M691.573 338.89c-1.282 109.275-89.055 197.047-198.33 198.331-109.292 1.282-197.065-90.984-198.325-198.331-0.809-68.918-107.758-68.998-106.948 0 1.968 167.591 137.681 303.31 305.272 305.278C660.85 646.136 796.587 503.52 798.521 338.89c0.811-68.998-106.136-68.918-106.948 0z" fill="#4A5699" /><path d="M294.918 325.158c1.283-109.272 89.051-197.047 198.325-198.33 109.292-1.283 197.068 90.983 198.33 198.33 0.812 68.919 107.759 68.998 106.948 0C796.555 157.567 660.839 21.842 493.243 19.88c-167.604-1.963-303.341 140.65-305.272 305.278-0.811 68.998 106.139 68.919 106.947 0z" fill="#C45FA0" /><path d="M222.324 959.994c0.65-74.688 29.145-144.534 80.868-197.979 53.219-54.995 126.117-84.134 201.904-84.794 74.199-0.646 145.202 29.791 197.979 80.867 54.995 53.219 84.13 126.119 84.79 201.905 0.603 68.932 107.549 68.99 106.947 0-1.857-213.527-176.184-387.865-389.716-389.721-213.551-1.854-387.885 178.986-389.721 389.721-0.601 68.991 106.349 68.933 106.949 0.001z" fill="#E5594F" /></svg>
+              </div>
+              <div className='userdata'>
+                <p>{userdata.auth.username}</p>
+                <p>{userdata.auth.email}</p>
+              </div>
+            </div>
+            <Button 
+              style={{textTransform:'inherit', fontWeight:'600', fontSize:'15px'}}
+              onClick={logoutHandler}>
+              Logout
+            </Button>
+          </div>
+        }
         <Grid xs={2} item style={{overflow:'hidden'}}>
             <img  src={logo} alt="Logo" width='35px' height='35px'/>
         </Grid>
@@ -35,34 +73,39 @@ const Nav = ({isDropdown, dropdownhandler}) => {
           style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center', gap:'5px'}}>
 
 
+        <Link to={'/'} style={{textDecoration:'none'}}>
           <Button 
           className={`dasbutton ${activebutton == 'dashboard' || location.pathname == '/' ? 'active' : ''}`}
           onClick={()=>activebuttonHandler('dashboard')}
-          variant={`${activebutton == 'dashboard' ? 'outlined' : 'text'}`}>
-            <span  className='logospan'>
+          variant={`${activebutton == 'dashboard' || location.pathname == '/' ? 'outlined' : 'text'}`}>
+            <span className='logospan' >
               <Dasicon />
               <span className='logotext'>
                 Dashboard
               </span>
             </span>
           </Button>
+        </Link>
 
+        <Link to={'/boards'} style={{textDecoration:'none'}}>
           <Button 
-          className={`dasbutton ${activebutton == 'board' ? 'active' : ''}`}
+          className={`dasbutton ${activebutton == 'board' || location.pathname == '/boards' ? 'active' : ''}`}
           onClick={(e)=>activebuttonHandler('board')}
-          variant={`${activebutton == 'board' ? 'outlined' : 'text'}`}>
+          variant={`${activebutton == 'board' || location.pathname == '/boards' ? 'outlined' : 'text'}`}>
             <span className='logospan'>
-              <Foldericon/>
+              <Boards/>
               <span className='logotext'>
                 Boards
               </span>
             </span>
           </Button>
+        </Link>
 
         </Grid>
-        <Grid xs={2} item className='setting'>
+        <Grid xs={2} item className='setting' style={{cursor:'pointer'}}>
         <span onClick={()=>dropdownhandler(!isDropdown)}>
-          <SettingsIcon/>
+          {/* <SettingsIcon style={{color:'#64748B'}} /> */}
+          <Setting style={{color:'#64748B'}} />
         </span>
         </Grid>
     </Grid>

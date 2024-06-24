@@ -23,3 +23,22 @@ body {
     height: 100%;
     width: 100%;
 }
+
+
+::-webkit-scrollbar{
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track{
+    background: rgba(230, 233, 244, .5411764705882353);
+}
+
+::-webkit-scrollbar-thumb{
+    background: #bdc0d240;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background: rgba(189, 192, 210, .25098039215686274);
+}
