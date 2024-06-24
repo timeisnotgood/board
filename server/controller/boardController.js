@@ -3,8 +3,33 @@ const knex = require('../knex/knexfile')
 const getallBoards = async(req, res) =>{
     try {
         console.log("*********",req.user);
+        const {id} = req.params;
 
-        const boards = await knex('board').select('brd_title').where({"delete_flag" : 0});
+        const boards = 
+        await knex('board as brd')
+        .where({"brd.id":id})
+            .select(
+                'brd.brd_title',
+                'brd.id',
+                'brd.created_at',
+                'brd.list_order',
+                knex.raw(` JSON_ARRAYAGG(JSON_OBJECT(
+                  'list_title', lst.list_title,
+                  'card_order',lst.card_order,
+                  'cards', (
+                      SELECT JSON_ARRAYAGG(crd.card_title)
+                      FROM card crd
+                      WHERE crd.list_id = lst.id
+                      ORDER BY lst.card_order
+                  )
+                 )) AS list`)
+            )
+            .leftJoin('list as lst', function () {
+                this.on('brd.id', '=', 'lst.brd_id');
+            })
+            .groupBy('brd.id')          
+            .where({'brd.delete_flag' : 0});
+
         res.status(200).json(boards);
     } catch (error) {
         res.json(error);
@@ -21,6 +46,7 @@ const getBoard = async(req, res) =>{
       .where({"brd.create_by":id})
           .select(
               'brd.brd_title',
+              'brd.id',
               'brd.created_at',
               'brd.list_order',
               knex.raw(` JSON_ARRAYAGG(JSON_OBJECT(
@@ -85,7 +111,7 @@ const updateBoard = async(req, res) =>{
 
 const deleteBoard = async(req, res)=>{
     try {
-        const {id} = req.query;
+        const {id} = req.params;
         const currentDate = new Date();
         if (!id) return res.json({"error" : "Id is expected to find Board"})
         const deleteBoard = await knex('board').where({id:id}).update({
@@ -116,7 +142,7 @@ const deleteBoard = async(req, res)=>{
             "delete_flag" : 0,
             "deleted_at" :currentDate
           })
-        res.status(200).json(list)
+        res.status(200).json({"status" : "current board deleted"})
     } catch (error) {
         res.json(error)
     }
