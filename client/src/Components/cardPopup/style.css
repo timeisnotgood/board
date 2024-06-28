@@ -1,0 +1,71 @@
+/* .cardpopupdialoug{
+    width: 100dvh;
+    height: 100dvh;
+    border: 1px solid black;
+} */
+
+.cardpopupnav{
+    /* border: 1px solid black; */
+    padding: 20px 20px 10px;
+    box-shadow: 0px 4px 4px 0px #00000017;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.cardpopupnav h2{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.cardpopupaction{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.cardpopupaction button{
+    padding: 8px 8px;
+    font-size: smaller;
+    width: 2px;
+    box-shadow: none;
+}
+
+.cardpopupaction button span{
+    min-width: fit-content !important;
+}
+  
+.MuiButton-root{
+    min-width: min-content;
+}
+
+.cardpopupbody{
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cardactivities{
+    display: flex;
+    flex-direction: row;
+    justify-content: baseline;
+    align-items: center;
+    gap: 15px;
+    /* margin-top: 20px; */
+}
+
+.cardactivities p{
+    color: black;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.cardpopupbody button{
+    background: linear-gradient(90deg, #5351FC 0%, #19A9FC 100%) !important;
+    color: white;
+    border-radius: 7px !important;
+    padding: 4px 18px;
+}

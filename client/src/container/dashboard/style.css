@@ -88,3 +88,8 @@
     font-size: 30px;
     height: 100%;
 }
+
+.test div input{
+    width: fit-content;
+    background-color: #F4F6F9;
+}

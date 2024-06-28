@@ -1,5 +1,5 @@
 .board{
-    height: 100%;
+    height: 100dvh;
     width: 100%;
     background-color: #F4F6F9;
     display: flex;
@@ -46,16 +46,6 @@
     stroke: #64748B;
 }
 
-
-/* .boardselect{
-    width: 150px;
-    height: 30px;
-    border-radius: 15px;
-    border-color: #D7DBEC;
-    overflow: hidden;
-    background-color: white;
-} */
-
 .boardselect div{
     padding: 0px 0px;
 }
@@ -64,8 +54,6 @@
     background-color: white;
     padding: 5px 15px;
     text-align: center;
-    position: absolute;
-    z-index: 1;
     right: 60px;
     border-radius: 12px;
     top: 100px;
@@ -81,14 +69,9 @@
 }
 
 .addboardlist{
-    /* border: 1px solid black; */
     background-color: white;
     text-align: start;
-    position: absolute;
-    right: 60px;
     border-radius: 12px;
-    top: 100px;
-    z-index: 1;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     min-width: 200px;
     padding: 10px 20px;
@@ -99,7 +82,7 @@
 
 .deleteback{
      width: 100vw;
-     height: 100%;
+     height: 100dvh;
      background-color: rgba(0, 0, 0, 0.454);
      position: absolute;
      z-index: 1;
@@ -139,16 +122,17 @@
 
 .boardinput div ::placeholder {
     /* text-align: center; */
-    padding: 0px 20px;
+    padding: 0px 5px;
   }
 
 .boardinput{
-    padding: 0px
+    padding: 0px;
 }
 
 .boardinput input{
-    padding: 0px;
+    padding: 0px 15px;
     height: 40px;
+    box-sizing: border-box;
 }
 
 .boardselect input{
@@ -160,24 +144,30 @@
     padding: 0px 4px;
     text-align: center;
     color: #64748B;
+    position: relative;
 }
 
+.deletepopup{
+    padding: 20px;
+}
 
 /* Body */
 .boardbody{
     height: 80%;
     padding: 5px 13px;
     width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .boardinner{
     height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     gap: 15px;
-    width: 100%;
-    overflow: hidden;
-    overflow-x: scroll;
+    overflow: scroll;
+
 }
 
 .boardcard{
@@ -199,19 +189,39 @@
     font-weight: 700;
     height: 40px;
     overflow: hidden;
+    position: relative;
 }
 
 .cardnav span{
     color: #64748B;
     font-weight: 100;
+    margin-left: 10px;
 }
+
+.cardnavactions div{
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+}
+
+.cardnavactions p{
+    background-color: white;
+    text-align: center;
+    border-radius: 7px;
+    padding: 8px 12px;
+    right: 10px;
+    top: 20px;
+    font-size: 14px;
+    margin: 0px;
+    color: #0F172A !important;
+    cursor: default;
+}
+
 
 .cardbody{
     padding: 2px 7px;
     display: flex;
     min-height: 0px;
     max-height: 300px;
-    /* border: 1px solid black; */
     flex-direction: column;
     gap: 8px;
     overflow: hidden;
@@ -234,11 +244,14 @@
     text-align: center;
     border-radius: 12px;
     background-color: #E3E4E9;
+    cursor: pointer;
 }
 
 .addlist h6{
     font-size: 14px;
     margin: 0;
+    cursor: pointer;
+
 }
 
 .listbutton{
@@ -254,5 +267,45 @@
     color: #4e61fc !important;
 }
 
-/* .listbutton span{
-} */
+.listbutton span{
+    cursor:pointer;
+}
+
+.listaction{
+    height: min-content;
+    min-width: min-content;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.listinputpopup{
+    /* border: 1px solid black; */
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 15px;
+
+}
+
+.listinputpopupaction{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 25px;
+}
+
+.listinputpopupaction button{
+    /* border: 1px solid black; */
+    padding: 3px 25px;
+    color: #6a6a6a ;
+    border-radius: 7px;
+    background-color: #EBECED ;
+    text-transform: inherit ;
+}

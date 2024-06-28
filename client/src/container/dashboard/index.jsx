@@ -4,14 +4,28 @@ import Grid from '@material-ui/core/Grid';
 import Nav from '../../Components/navbar/Nav';
 import {useNavigate} from 'react-router-dom'
 import './style.css'
+import { TextField } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+
+
+const useStyles = makeStyles({
+  inputField: {
+    padding: '0px',
+    margin: '0px',
+    width: 'max-content',
+  },
+});
 
 const Dashboard = () => {
+  const classes = useStyles();
+
   const navigate = useNavigate();
 
   useEffect(()=>{
-    console.log("home route*************");
+    // console.log("home route*************");
     const token = localStorage.getItem('accesstoken');
-    console.log("tokenn*************",token);
+    // console.log("tokenn*************",token);
     if (token == null) {
       console.log("token invalid push to login",token);
       navigate('/login');
@@ -20,7 +34,7 @@ const Dashboard = () => {
 
   // user data --------------------
   const userdata = useSelector(s => s)
-  console.log("****************", userdata);
+  // console.log("****************", userdata);
 
   //-------------------------------
 
@@ -45,7 +59,6 @@ const Dashboard = () => {
         container
         className='subcontainer'
         direction="column">
-        <Nav/>
           <Grid container className='body' >
             <Grid item xs={12} sm={6} className='bodycontainer'>
               <Grid className='containertext'>
@@ -90,7 +103,15 @@ const Dashboard = () => {
             <Grid item xs={12} sm={6} className='bodycontainer'>
               <Grid className='containertext'>
                 <div className='fourthcontainer'>
-                  <h4>Comming Soon...</h4>
+                {/* <TextField
+                    value={"kjhkj"}
+                    variant='outlined'
+                    margin='normal'
+                    style={{padding:'0px',margin:'0px', width:'max-content'}}
+                    autoFocus
+                    className={classes.inputField}
+                    /> */}
+                    Comming Soon....
                 </div>
               </Grid>
             </Grid>

@@ -25,8 +25,6 @@ export const Login = () => {
   });
 
   const token = localStorage.getItem('accesstoken');
-  // if (!token) navigate('/')
-  console.log("******", token);
 
   const [touched, setTouched] = useState({
     email: false,
@@ -84,22 +82,20 @@ export const Login = () => {
         'Access-Control-Allow-Origin': '*'
         }
     }).then(async(data)=>{
-      console.log(data.data.accesstoken);
       const token = data.data.accesstoken
       localStorage.setItem('accesstoken', token)
       const userdata = jwtDecode(token);
-      console.log(userdata.user.id);
-      const userrelatedboards = await axios.get(`http://localhost:5000/board/getboard/${userdata.user.id}`,{
-      headers:{
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization' : token
-      }
-    })
-    console.log("**********",userrelatedboards.data);
-    // console.log(userdata.user);
-    dispatch(setaccesstoken(userdata.user))
-    dispatch(setboarddata(userrelatedboards.data))
+      dispatch(setaccesstoken(userdata.user))
+
+    //   const userrelatedboards = await axios.get(`http://localhost:5000/board/getboard/${userdata.user.id}`,{
+    //   headers:{
+    //     'Content-Type': 'application/json',
+    //     'Access-Control-Allow-Origin': '*',
+    //     'Authorization' : token
+    //   }
+    // })
+
+    // dispatch(setboarddata(userrelatedboards.data))
     navigate("/")
     })
   };
