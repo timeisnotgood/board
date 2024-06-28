@@ -16,8 +16,10 @@ const getallBoards = async(req, res) =>{
                 knex.raw(` JSON_ARRAYAGG(JSON_OBJECT(
                   'list_title', lst.list_title,
                   'card_order',lst.card_order,
+                  'list_id',lst.id,
                   'cards', (
-                      SELECT JSON_ARRAYAGG(crd.card_title)
+                     SELECT JSON_ARRAYAGG(JSON_OBJECT('card_title',crd.card_title, 'card_id',crd.id))
+
                       FROM card crd
                       WHERE crd.list_id = lst.id
                       ORDER BY lst.card_order
@@ -25,7 +27,7 @@ const getallBoards = async(req, res) =>{
                  )) AS list`)
             )
             .leftJoin('list as lst', function () {
-                this.on('brd.id', '=', 'lst.brd_id');
+                this.on('brd.id', '=', 'lst.brd_id').on('lst.delete_flag', '=', 0);
             })
             .groupBy('brd.id')          
             .where({'brd.delete_flag' : 0});
@@ -35,6 +37,8 @@ const getallBoards = async(req, res) =>{
         res.json(error);
     }
 }
+
+// SELECT JSON_ARRAYAGG(JSON_OBJECT('card_title',crd.card_title,'card_id',crd.id))
 
 const getBoard = async(req, res) =>{
   try {
@@ -52,8 +56,10 @@ const getBoard = async(req, res) =>{
               knex.raw(` JSON_ARRAYAGG(JSON_OBJECT(
                 'list_title', lst.list_title,
                 'card_order',lst.card_order,
+                'list_id',lst.id,
                 'cards', (
-                    SELECT JSON_ARRAYAGG(crd.card_title)
+                     SELECT JSON_ARRAYAGG(JSON_OBJECT('card_title',crd.card_title, 'card_id',crd.id))
+
                     FROM card crd
                     WHERE crd.list_id = lst.id
                     ORDER BY lst.card_order
@@ -61,7 +67,7 @@ const getBoard = async(req, res) =>{
                )) AS list`)
           )
           .leftJoin('list as lst', function () {
-              this.on('brd.id', '=', 'lst.brd_id');
+              this.on('brd.id', '=', 'lst.brd_id').on('lst.delete_flag', '=', 0);
           })
           .groupBy('brd.id')          
           .where({'brd.delete_flag' : 0});
@@ -80,7 +86,8 @@ const createBoard = async(req, res)=>{
         const {boardTitle, userId} = req.body;
         if (!boardTitle) return res.json({"error" : "The Title is mandatory"})
         const createBoard = await knex('board').insert({"brd_title" : boardTitle, "create_by" : userId})
-        if(createBoard) res.status(200).json({"Status" : "Board created Success fully"})
+        const [boardid] = createBoard
+        if(createBoard) res.status(200).json({"Status" : "Board created Success fully","boardid": boardid})
     } catch (error) {
         res.json(error)
     }
@@ -103,7 +110,6 @@ const updateBoard = async(req, res) =>{
             })
             res.status(200).json({"status" : "board updated Successfully"})
         }
-
     } catch (error) {
         console.log(error);
     }

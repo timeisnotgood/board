@@ -2,7 +2,7 @@ const knex = require("../knex/knexfile");
 
 const getList = async(req, res)=>{
     try {
-        const {id} = req.query
+        const {id} = req.params
         if(!id) return res.status(404).json({"error" : "Board is mandatory to get list"})
         const list = await knex('list').select().where({'brd_id' : id,"delete_flag" : 0});
 
@@ -82,7 +82,7 @@ const updateList = async(req, res) =>{
 const deleteList = async(req, res) =>{
 
     try{
-        const {id} = req.query;
+        const {id} = req.params;
         const currentDate = new Date();
         const existingList = await knex('list').select().where({"id" : id});
         if(existingList){

@@ -32,6 +32,7 @@ const createCard = async(req, res) =>{
         const getcardorder = await knex('list').select('card_order').where({"id" : listId});
 
         const arr = JSON.parse(getcardorder[0].card_order);
+        
         console.log("existing array : ", arr); // card ORder
         if (arr != null || arr == "") {
             const updatedarray = [...arr, cardId];
@@ -39,17 +40,16 @@ const createCard = async(req, res) =>{
             const cardArray = await knex('list').where({"id":listId}).update({
                 "card_order" : JSON.stringify(updatedarray)
             });
+            console.log("existing list");
+            res.status(200).json({"status":"card list updated"})
         }else{
+            console.log("new list");
             const newcard = [cardId];
             const cardArray = await knex('list').where({"id":listId}).update({
                 "card_order" : JSON.stringify(newcard)
             });
-            res.json({"status":"new card created"})
+            res.status(200).json({"status":"new card created"});``
         }
-
-
-
-        res.json({"status" : "card created"});
     } catch (error) {
         res.json(error);
     }
@@ -77,13 +77,15 @@ const cardInterchange = async(req, res)=>{
 const updateCard = async(req, res) =>{
 
     try {
-        const {id, discussion} = req.body;
+        const {cardid, cardTitle} = req.body;
+        console.log(cardTitle);
         const currentDate = new Date();
-        const existingcard = await knex('card').select().where({"id" : id});
+        const existingcard = await knex('card').select().where({"id" : cardid});
         console.log(existingcard);
         if(existingcard){
-            const updatedCard = await knex('card').where({"id":id}).update({
-                "discussion" : discussion,
+            console.log(cardTitle);
+            const updatedCard = await knex('card').where({"id":cardid}).update({
+                "card_title" : cardTitle,
                 "updated_at" : currentDate
             });
             res.status(200).json(updatedCard);
