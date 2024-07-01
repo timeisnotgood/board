@@ -80,8 +80,10 @@ const List = ({crddata, currentboard, setcurrentboard}) => {
 
     // Delete List
     
-    const listdeleteHandler = async(data)=>{
-      const deletedcard = await axios.delete(`http://localhost:5000/list/deletelist/${data}`,{
+    const listdeleteHandler = async(listis)=>{
+      const deletedcard = await axios.delete(`http://localhost:5000/list/deletelist/${listis}`,{
+            brdid : currentboard.id
+        },{
           headers:{
               "Authorization":localStorage.getItem('accesstoken')
           }

@@ -101,9 +101,17 @@ const Boardcard = ({data, currentboard}) => {
 
     // card Dialog actoni
     const [Dialogopen, setDialogOpen] = useState(false);
+    const [selectedcard, setSelectcard] = useState({
+        card_id :'',
+        card_title :''
+    })
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (data) => {
         setDialogOpen(true);
+        setSelectcard({
+            card_id:data.card_id,
+            card_title:data.card_title
+        })
     };
   
     const handleClose = () => {
@@ -115,7 +123,7 @@ const Boardcard = ({data, currentboard}) => {
         <div className='cardbody'>
             {data.cards ?  data.cards.map((innerdata, index)=>(
                 <div
-                    onDoubleClick={handleClickOpen}
+                    onDoubleClick={()=>handleClickOpen(innerdata)}
                     className='cardlist'
                     key={innerdata.card_id}
                     >
@@ -127,6 +135,7 @@ const Boardcard = ({data, currentboard}) => {
                         variant='p'>
                         {innerdata.card_title}
                     </Typography>
+                    <CardDialog Dialogopen={Dialogopen} handleClose={handleClose} selectedcard={selectedcard}/>
                 </div>
                 )) : null
             }
@@ -152,8 +161,6 @@ const Boardcard = ({data, currentboard}) => {
                 <h6>+ Add a card</h6>
             </Grid>
         </Grid>
-        {/* Card Open Dialog */}
-        <CardDialog Dialogopen={Dialogopen} handleClose={handleClose}/>
     </>
   )
 }
