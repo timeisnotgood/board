@@ -10,8 +10,14 @@ route.put('/updatecard', authenticate, cardController.updateCard);
 route.put('/cardinterchange', authenticate, cardController.cardInterchange);
 route.delete('/deletecard', authenticate, cardController.deleteCard);
 
+//-------------------------------------------------------------------------------
+
+// discussion  Route
+route.get('/getdiscussion/:id', authenticate,cardController.getdiscussion);
+route.post('/creatediscussion', authenticate, cardController.createDiscussion);
+//------------------------------------------------------------------------------
 // cmt Routes
-route.get('/getcmt', authenticate, cardController.getComment);
+route.get('/getcmt/:id', authenticate, cardController.getComment);
 route.post('/createcmt', authenticate, cardController.createComment);
 route.put('/updatecmt', authenticate, cardController.updateComment);
 route.delete('/deletecmt', authenticate, cardController.deleteComment);

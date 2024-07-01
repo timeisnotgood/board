@@ -83,6 +83,8 @@ const deleteList = async(req, res) =>{
 
     try{
         const {id} = req.params;
+        const {brdid} = req.body;
+        console.log(brdid);
         const currentDate = new Date();
         const existingList = await knex('list').select().where({"id" : id});
         if(existingList){
@@ -90,6 +92,12 @@ const deleteList = async(req, res) =>{
                 "delete_flag" : 1,
                 "updated_at" : currentDate
             })
+            if (updateList) {
+                const getdata = await knex('list').select().where({"id":id})
+                console.log(getdata);
+                // res.status(200).json(getdata)
+            }
+            console.log(updateList);
             res.status(200).json(updatedList);
         }
     } catch (error) {

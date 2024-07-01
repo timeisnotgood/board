@@ -115,23 +115,51 @@ const deleteCard = async(req, res)=>{
     }
 }
 
+//-------------------------------------------------------------------------------------------
+
+// Discussion Controller
+
+const getdiscussion = async(req, res)=>{
+    try {
+        const {id} = req.params;
+        const discussion = await knex('card').where({"id":id}).select('discussion')
+        res.status(200).json(discussion)
+    } catch (error) {
+        res.json(error);
+    }
+}
+
+const createDiscussion = async(req, res) =>{
+    try {
+        const { cardId, discussion} = req.body;
+        const creatediscussion = await knex('card').where({"id":cardId}).update({
+            "discussion" : discussion
+        })
+
+        res.status(200).json(creatediscussion);
+    } catch (error) {
+        res.json(error)
+    }
+}
+
 // Cmt Controller
 
 const getComment = async(req, res)=>{
     try {
-        const {id} = req.query;
+        const {id} = req.params;
         if (!id) res.status(200).json({"Error" : "no card found to cmt"});
-        const comments = await knex('cmt').select().where({"card_id":id});
+        const comments = await knex('cmt').select('comment').where({"card_id":id});
         res.status(200).json(comments);
     } catch (error) {
         res.json(error);
     }
 }
 
+
 const createComment = async(req, res)=>{
 
     try {
-        const {id, comment} = req.body;
+        const {id, comment, userid} = req.body;
         if (!id) res.status(200).json({"Error" : "no card found to cmt"});
         if (!comment) res.status(200).json({"Error" : "Enter a Comment"});
         const existingcard = await knex('card').select().where({"id" : id});
@@ -140,6 +168,7 @@ const createComment = async(req, res)=>{
         } else {
             const createdCmt = await knex('cmt').insert({
                 "comment":comment,
+                "create_by":userid,
                 "card_id":id
             })
             res.status(200).json(createdCmt);
@@ -195,7 +224,8 @@ const deleteComment = async(req, res)=>{
 }
 
 module.exports = { getCard, createCard, updateCard, deleteCard, cardInterchange,
-                    getComment, createComment, updateComment, deleteComment
+                    getComment, createComment, updateComment, deleteComment,
+                    getdiscussion, createDiscussion
 };
 
 
