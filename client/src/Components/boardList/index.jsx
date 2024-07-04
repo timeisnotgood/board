@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setcarddataredux } from '../../redux/actions'
 import Boardcard from '../boardCard';
 import { makeStyles } from '@material-ui/core/styles';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 
 
@@ -53,6 +54,7 @@ const List = ({crddata, currentboard, setcurrentboard}) => {
 
       // Create new List
 
+      
       const [newlistdata, setnewlistdata] = useState('');
       const [newlistpopup, setnewlistpopup] = useState(false);
       const createListHandler = async() =>{
@@ -81,14 +83,17 @@ const List = ({crddata, currentboard, setcurrentboard}) => {
     // Delete List
     
     const listdeleteHandler = async(listis)=>{
-      const deletedcard = await axios.delete(`http://localhost:5000/list/deletelist/${listis}`,{
+        console.log("working",currentboard.id);
+      const deletedcard = await axios.post(`http://localhost:5000/list/deletelist/${listis}`,{
             brdid : currentboard.id
-        },{
-          headers:{
-              "Authorization":localStorage.getItem('accesstoken')
-          }
-      })
+        },
+        {
+            headers:{
+                "Authorization":localStorage.getItem('accesstoken')
+            }
+        })
       
+
       const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
           headers:{
               "Authorization":localStorage.getItem('accesstoken')
@@ -98,7 +103,6 @@ const List = ({crddata, currentboard, setcurrentboard}) => {
       const list = currentboardlists.data[0].list;
       console.log("***************",list);
       dispatch(setcarddataredux(list));
-      // console.log(deletedcard);
   }
 
     //update Board Title
@@ -145,57 +149,64 @@ const List = ({crddata, currentboard, setcurrentboard}) => {
             setIsEditing(false);
         }
     };
+    
+    // console.log(crddata);
 
   return (
     <div className='boardinner'>
-                {crddata[0]?.list_title != null && crddata.length > 0 ? crddata.map((data)=>(
-                            <div className='boardcard' key={data.list_id} >
-                                <div className='cardnav'>
-                                        <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                                            <Typography 
-                                                onInput={(e) => handleTitleChange(data.list_id, e.target.innerText)}
-                                                onClick={handleTitleClick}
-                                                onBlur={()=>handleBlur(data.list_id)}
-                                                contenteditable="true"
-                                                variant='h6'>
-                                                {data.list_title}
-                                            </Typography>
-                                                <span style={{fontSize:'14px'}}>({data.cards ? data.cards.length : 0})</span>
-                                        </div>
-                                        {
-                                            <Grid>
-                                                <PopupState variant="popover" popupId="demo-popup-popover" >
-                                                    {(popupState) => (
-                                                        <div >
-                                                            <span onClick={()=>{setcardactionpopup(!cardactionpopup)}}  {...bindTrigger(popupState)}>
-                                                                <Dots/>
-                                                            </span>
-                                                            <Popover
-                                                                {...bindPopover(popupState)}
-                                                                anchorOrigin={{
-                                                                vertical: 'bottom',
-                                                                horizontal: 'center',
-                                                                }}
-                                                                transformOrigin={{
-                                                                vertical: 'top',
-                                                                horizontal: 'center',
-                                                                }}
-                                                                className='cardnavactions'
-                                                                style={{padding:'8px 0px'}}
-                                                            >
-                                                            <div className='cardnavactions'>
-                                                                <p onClick={()=>{console.log(data.list_id)}}>Add Card</p>
-                                                                <p onClick={()=>{listdeleteHandler(data.list_id)}}>Delete List</p>
-                                                            </div>
-                                                            </Popover>
-                                                        </div>
-                                                    )}
-                                                </PopupState>
-                                            </Grid>
-                                        }
+                {crddata[0]?.list_title != null && crddata.length > 0 ? crddata.map((data, index)=>(
+                    <Droppable droppableId={JSON.stringify(data.list_id)}>
+                        {(provided)=>(
+                        <div className='boardcard' key={JSON.stringify(data.list_id)} {...provided.droppableProps} ref={provided.innerRef}>
+                            <div className='cardnav' >
+                                <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+                                    <Typography 
+                                        onInput={(e) => handleTitleChange(data.list_id, e.target.innerText)}
+                                        onClick={handleTitleClick}
+                                        onBlur={()=>handleBlur(data.list_id)}
+                                        contenteditable="true"
+                                        variant='h6'>
+                                        {data.list_title}
+                                    </Typography>
+                                        <span style={{fontSize:'14px'}}>({data.cards ? data.cards.length : 0})</span>
                                 </div>
-                                <Boardcard data={data} currentboard={currentboard}/>
-                            </div>
+                                { 
+                                    <Grid>
+                                        <PopupState variant="popover" popupId="demo-popup-popover" >
+                                            {(popupState) => (
+                                                <div >
+                                                    <span onClick={()=>{setcardactionpopup(!cardactionpopup)}}  {...bindTrigger(popupState)}>
+                                                        <Dots/>
+                                                    </span>
+                                                    <Popover
+                                                        {...bindPopover(popupState)}
+                                                        anchorOrigin={{
+                                                        vertical: 'bottom',
+                                                        horizontal: 'center',
+                                                        }}
+                                                        transformOrigin={{
+                                                        vertical: 'top',
+                                                        horizontal: 'center',
+                                                        }}
+                                                        className='cardnavactions'
+                                                        style={{padding:'8px 0px'}}
+                                                    >
+                                                    <div className='cardnavactions'>
+                                                        <p onClick={()=>{console.log(data.list_id)}}>Add Card</p>
+                                                        <p onClick={()=>{listdeleteHandler(data.list_id)}}>Delete List</p>
+                                                    </div>
+                                                    </Popover>
+                                                </div>
+                                            )}
+                                        </PopupState>
+                                    </Grid>
+                                }
+                            </div> 
+                            <Boardcard data={data} currentboard={currentboard}/>
+                            {provided.placeholder}
+                        </div> 
+                        )}
+                    </Droppable>
                 )) : <></>}
                 <div className='listaction'>
                     <Grid className='listbutton' onClick={()=>setnewlistpopup(!newlistpopup)}>

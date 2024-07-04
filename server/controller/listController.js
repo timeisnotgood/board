@@ -82,22 +82,31 @@ const updateList = async(req, res) =>{
 const deleteList = async(req, res) =>{
 
     try{
-        const {id} = req.params;
-        const {brdid} = req.body;
-        console.log(brdid);
-        const currentDate = new Date();
+        let {id} = req.params;
+        let {brdid} = req.body;
+        const currentDate = new Date(); 
         const existingList = await knex('list').select().where({"id" : id});
         if(existingList){
+
             const updatedList = await knex('list').where({"id":id}).update({
                 "delete_flag" : 1,
                 "updated_at" : currentDate
             })
-            if (updateList) {
-                const getdata = await knex('list').select().where({"id":id})
-                console.log(getdata);
-                // res.status(200).json(getdata)
-            }
-            console.log(updateList);
+
+            const getdata = await knex('board').select('list_order').where({"id":brdid})
+            console.log(getdata);
+            let existinglist = JSON.parse(getdata[0].list_order);
+            let oldarr = existinglist
+            
+            let newArr = oldarr.filter(item => item != JSON.parse(id));
+            
+            console.log("id to be deleted -", id);
+            console.log("existing -",existinglist);
+            console.log("new array -",newArr);
+
+            const updateBoard = await knex('board').where({"id":brdid}).update({
+                'list_order':JSON.stringify(newArr)
+            })
             res.status(200).json(updatedList);
         }
     } catch (error) {

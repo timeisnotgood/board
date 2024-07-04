@@ -174,3 +174,23 @@
     color: #0F172A !important;
     font-weight: 500 !important;
 }
+
+/* delete popup */
+.deletepopover{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px 10px;
+    gap: 10px;
+    cursor: pointer;
+    border-radius: 12px;
+    color: #64748b;
+}
+
+.deletepopover svg{
+    width: 16px;
+}
+
+.MuiPaper-root MuiPopover-paper MuiPaper-elevation8 MuiPaper-rounded{
+    box-shadow: none;
+}

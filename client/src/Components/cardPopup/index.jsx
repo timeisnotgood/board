@@ -1,4 +1,4 @@
-import { Button, Collapse, Dialog, DialogContent, DialogContentText, Grid, InputLabel, Paper, TextField, Typography, useTheme } from '@material-ui/core';
+import { Button, Collapse, Dialog, DialogContent, DialogContentText, Grid, InputLabel, Paper, Popover, TextField, Typography, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as Threedot} from './svg/threedot.svg';
 import { ReactComponent as Cross} from './svg/Cross.svg';
@@ -9,11 +9,14 @@ import { ReactComponent as Arrowup } from './svg/ArrowUp.svg'
 import { ReactComponent as Usericon } from './svg/User.svg'
 import { makeStyles } from '@mui/styles';
 import { ReactComponent as Sendarrow } from './svg/Sendarrow.svg'
+import { ReactComponent as Deletesvg } from './svg/delete.svg'
 
 
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './style.css'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setaccesstoken, setboarddataredux, setcarddataredux } from '../../redux/actions'
 import axios from 'axios';
 
 const useStyles = makeStyles({
@@ -45,12 +48,13 @@ const useStyles = makeStyles({
   //-------------------------------------------------------------------------------------
 
 
-const CardDialog = ({Dialogopen, handleClose, selectedcard}) => {
+const CardDialog = ({Dialogopen, handleClose, selectedcard, currentboard}) => {
     const theme = useTheme();
     const classes = useStyles();
     const userData = useSelector(s=>s);
     const usrdata = userData.auth;
-    console.log(usrdata);
+    const dispatch = useDispatch();
+
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     // Description & Cmt
@@ -60,6 +64,7 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard}) => {
     const [description, setDescription] = useState('');
     const [comments, setcomments] = useState('');
     const [datacomment, setDatacomment] = useState();
+    const navigate = useNavigate();
 
 
     const onSaveHandler = async() =>{
@@ -140,6 +145,43 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard}) => {
         }
     }
 
+    const [deletepopup, setDeletePopup] = React.useState(null);
+
+    const handleClick = (event) => {
+        setDeletePopup(event.currentTarget);
+    };
+
+    const handleDeleteClose = () => {
+        setDeletePopup(null);
+    };
+
+
+    const open = Boolean(deletepopup);
+    const id = open ? 'simple-popover' : undefined;
+  
+
+    //Delete Handler
+
+    const deletecardHandler = async() =>{
+        const deletecard = await axios.delete(`http://localhost:5000/card/deletecard/${selectedcard.card_id}`,{
+            headers: {
+                "Authorization": localStorage.getItem('accesstoken')
+                }
+        })
+
+        const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
+            headers:{
+                "Authorization":localStorage.getItem('accesstoken')
+            }
+        })
+        
+        const list = currentboardlists.data[0].list;
+        console.log("***************",list);
+        dispatch(setcarddataredux(list));
+        setDeletePopup(null);
+        navigate('/boards')
+    }
+
     // console.log(datacomment[0]);
   return (
     <Dialog open={Dialogopen} className='cardpopupdialoug' fullScreen={fullScreen}  PaperProps={{
@@ -152,9 +194,31 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard}) => {
             <Grid className='cardpopupnav'>
                 <Typography variant='h2'>{selectedcard.card_title}</Typography>
                 <Grid className='cardpopupaction'>
-                    <Button className='actionbutton'>
+                    <Button className='actionbutton' onClick={handleClick}>
                         <Threedot/>
                     </Button>
+                    <Popover
+                            id={id}
+                            open={open}
+                            anchorEl={deletepopup}
+                            onClose={handleDeleteClose}
+                            anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                            }}
+                        >
+                            <Grid
+                            className='deletepopover'
+                            onClick={deletecardHandler}
+                            >
+                            <Deletesvg/>Delete
+                            </Grid>
+                                
+                    </Popover>
                     <Button className='actionbutton' variant='contained' style={{backgroundColor:'#EDEDED'}}>
                         <Cross onClick={handleClose}/>
                     </Button>

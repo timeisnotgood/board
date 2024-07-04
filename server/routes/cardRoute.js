@@ -8,7 +8,7 @@ route.get('/getcard', authenticate, cardController.getCard);
 route.post('/createcard', authenticate, cardController.createCard);
 route.put('/updatecard', authenticate, cardController.updateCard);
 route.put('/cardinterchange', authenticate, cardController.cardInterchange);
-route.delete('/deletecard', authenticate, cardController.deleteCard);
+route.delete('/deletecard/:id', authenticate, cardController.deleteCard);
 
 //-------------------------------------------------------------------------------
 

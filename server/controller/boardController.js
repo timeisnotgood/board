@@ -19,9 +19,9 @@ const getallBoards = async(req, res) =>{
                   'list_id',lst.id,
                   'cards', (
                      SELECT JSON_ARRAYAGG(JSON_OBJECT('card_title',crd.card_title, 'card_id',crd.id))
-
                       FROM card crd
                       WHERE crd.list_id = lst.id
+                      and crd.delete_flag = 0
                       ORDER BY lst.card_order
                   )
                  )) AS list`)
@@ -59,7 +59,6 @@ const getBoard = async(req, res) =>{
                 'list_id',lst.id,
                 'cards', (
                      SELECT JSON_ARRAYAGG(JSON_OBJECT('card_title',crd.card_title, 'card_id',crd.id))
-
                     FROM card crd
                     WHERE crd.list_id = lst.id
                     ORDER BY lst.card_order

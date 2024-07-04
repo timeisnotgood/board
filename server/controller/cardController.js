@@ -100,7 +100,7 @@ const updateCard = async(req, res) =>{
 const deleteCard = async(req, res)=>{
     
     try {
-        const {id} = req.query;
+        const {id} = req.params;
         const currentDate = new Date();
         const existingcard = await knex('card').select().where({"id" : id});
         if (existingcard) {
@@ -202,7 +202,7 @@ const updateComment = async(req, res)=>{
 const deleteComment = async(req, res)=>{
 
     try {
-        const {id} = req.query;
+        const {id} = req.params;
         const {commentid} = req.body;
         const currentDate = new Date();
         const existingcard = await knex('card').select().where({"id" : id});

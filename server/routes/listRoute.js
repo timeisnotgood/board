@@ -6,7 +6,7 @@ const authenticate = require('../auth');
 route.get('/getlist/:id', authenticate, listController.getList);
 route.post('/createlist', authenticate, listController.createList);
 route.put('/updatelist', authenticate, listController.updateList);
-route.put('/updatecardorder', authenticate, listController.updatecardOrder);
-route.delete('/deletelist/:id', authenticate, listController.deleteList);
+route.post('/updatecardorder', authenticate, listController.updatecardOrder);
+route.post('/deletelist/:id', authenticate, listController.deleteList);
 
 module.exports = route;
