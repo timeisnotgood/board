@@ -12,45 +12,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 
-
-const useStyles = makeStyles({
-    inputField: {
-      padding: '0px',
-      margin: '0px',
-      height: '30px', // Adjust the height as needed
-      '& input': {
-        padding: '0px',
-        fontSize: '22px', // Match the h1 font size
-        fontWeight: 700, // Match the h1 font weight
-        width:'160px'        
-      },
-    },
-    input: {
-        fontSize: '22px',
-        fontWeight: 700,
-        padding: '0px',
-        border: '2px solid black',
-        borderRadius: '12px',
-        width: props => `${props.listtitle.length + 1}ch`, // +1 to ensure there's space for a new character
-        transition: 'width 0.2s ease-out',
-    },
-    hiddenInput: {
-        border: 'none',
-        padding: '0px',
-        fontSize: '22px',
-        fontWeight: 700,
-    },
-    typography: {
-      fontSize: '22px',
-      fontWeight: 700,
-    },
-  });
-
-const List = ({crddata, currentboard, setcurrentboard}) => {
+const List = ({ currentboard }) => {
 
       const dispatch = useDispatch();
-    //   const classes = useStyles({ listtitle });
-
+      let listdata = useSelector(data => data);
+      let crddata = listdata.cardData;
 
       // Create new List
 
@@ -202,7 +168,7 @@ const List = ({crddata, currentboard, setcurrentboard}) => {
                                     </Grid>
                                 }
                             </div> 
-                            <Boardcard data={data} currentboard={currentboard}/>
+                            <Boardcard currentboard={currentboard} listId={JSON.stringify(data.list_id)}/>
                             {provided.placeholder}
                         </div> 
                         )}

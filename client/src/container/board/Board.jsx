@@ -16,28 +16,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DragDropContext } from 'react-beautiful-dnd'
 
 
-const useStyles = makeStyles({
-    inputField: {
-      padding: '0px',
-      margin: '0px',
-      height: '30px', // Adjust the height as needed
-      '& input': {
-        padding: '0px',
-        fontSize: '22px', // Match the h1 font size
-        fontWeight: 700, // Match the h1 font weight
-        width:'160px'        
-      },
-    },
-    border:{
-        background:'green',
-      },
-    typography: {
-      fontSize: '22px',
-      fontWeight: 700,
-    },
-  });
-
-
 const Board = () => {
 
     const [boardpopup, setboardpopup] = useState(null);
@@ -48,8 +26,6 @@ const Board = () => {
     const brddata = userData.boarddata;
     const usrdata = userData.auth;
     const crddata = userData.cardData;
-    const classes = useStyles();
-
 
     const [boarddata, setboarddata] = useState();
     
@@ -82,6 +58,15 @@ const Board = () => {
             })
             setBoardTitle(boards.data[boards.data.length-1].brd_title);
         }
+        if(currentboard.brd_title != '' && currentboard.id != ''){
+            const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
+                headers:{
+                    "Authorization":localStorage.getItem('accesstoken')
+                }
+            })
+            const list = currentboardlists.data[0].list;
+             dispatch(setcarddataredux(list));
+        }   
     },[])
 
     // get Single board
@@ -94,7 +79,6 @@ const Board = () => {
                 }
             })
             const list = currentboardlists.data[0].list;
-            // console.log("new",list);
              dispatch(setcarddataredux(list));
         }   
     },[currentboard])
@@ -382,7 +366,7 @@ const Board = () => {
         </Grid>
         <DragDropContext onDragEnd={onCarddragEnd}>
             <Grid className='boardbody'>
-                <List crddata={crddata} currentboard={currentboard} setcurrentboard={setcurrentboard}/>
+                <List currentboard={currentboard}/>
             </Grid>
         </DragDropContext>
     </section>

@@ -173,6 +173,7 @@
 .boardcard{
     min-width: 270px;
     /* padding: 0px 10px; */
+    height: min-content;
     display: flex;
     flex-direction: column;
     gap: 7px;
@@ -220,8 +221,8 @@
 .cardbody{
     padding: 2px 7px;
     display: flex;
-    min-height: min-content;
-    max-height: 300px;
+    /* min-height: min-content;
+    max-height: 300px; */
     flex-direction: column;
     gap: 8px;
     overflow: hidden;
