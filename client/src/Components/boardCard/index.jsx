@@ -14,6 +14,7 @@ const Boardcard = ({ currentboard, listId}) => {
 
     const {cardData} = useSelector(data => data);
     let [data] = cardData.filter( el => el.list_id == listId);
+    // console.log(data);
     
     // Card Action  Add card
 

@@ -190,40 +190,197 @@ const Board = () => {
     const onCarddragEnd = async(result) =>{
         console.log(result);
         const {draggableId, source, destination} = result;
+
         if(!destination) return;
         if (destination.draggableId === source.droppableId 
             && destination.index === source.index) return;
-        
+
+        const start = source.droppableId;
+        const finish = destination.droppableId;
         const [currentList] = crddata.filter( el => el.list_id == source.droppableId);
-
-        let cardOrder = JSON.parse(currentList.card_order);
-        cardOrder.splice(source.index, 1);
-        cardOrder.splice(destination.index, 0, JSON.parse(draggableId));
-        console.log("UpdatedcardOrder", cardOrder);
-        let sortedCards = cardOrder.map(id => currentList.cards.filter(card => card.card_id === id)[0]);
-
-        const sortedlist = {
-            ...currentList,
-            card_order : JSON.stringify(cardOrder),
-        } 
-
-        const updatedlistdata = crddata.filter( el => el.list_id != source.droppableId);
-        updatedlistdata.unshift(sortedlist)
-        console.log("updatedListOrder", updatedlistdata);
-
-        dispatch(setcarddataredux(updatedlistdata));
+        const [destinationList] = crddata.filter( el => el.list_id == destination.droppableId);
 
 
-        // saving card order
 
-        const updatecardorder = await axios.post(`http://localhost:5000/list/updatecardorder`,{
-        id :source.droppableId, 
-        cardOrder: JSON.stringify(cardOrder)
-        },{
-            headers:{
-                "Authorization":localStorage.getItem('accesstoken')
+        if (start == finish) {
+            let cardOrder = JSON.parse(currentList.card_order);
+            cardOrder.splice(source.index, 1);
+            cardOrder.splice(destination.index, 0, JSON.parse(draggableId));    
+            const sortedlist = {
+                ...currentList,
+                card_order : JSON.stringify(cardOrder),
+            } 
+    
+            const updatedlistdata = crddata.filter( el => el.list_id != source.droppableId);
+            updatedlistdata.unshift(sortedlist);
+            dispatch(setcarddataredux(updatedlistdata));
+    
+    
+            // saving card order
+    
+            const updatecardorder = await axios.post(`http://localhost:5000/list/updatecardorder`,{
+            id :source.droppableId, 
+            cardOrder: JSON.stringify(cardOrder)
+            },{
+                headers:{
+                    "Authorization":localStorage.getItem('accesstoken')
+                }
+            })  
+            return; 
+        }
+
+        const startList = JSON.parse(currentList.card_order);
+        const endList = JSON.parse(destinationList.card_order)
+
+        if (endList === null || endList == '') {
+
+            // existing to null card list
+
+            startList.splice(source.index, 1);//[56,57]
+            // console.log("sortedlist",startList);
+
+            const currentlists = {
+                ...currentList,
+                card_order : JSON.stringify(startList),
+                cards : currentList.cards.filter( el => el.card_id != draggableId)
+
             }
-        })
+            // console.log("startList", currentlists);
+
+            const updatecardorder = await axios.post(`http://localhost:5000/list/updatecardorder`,{
+                id :source.droppableId, 
+                cardOrder: JSON.stringify(startList)
+                },{
+                    headers:{
+                        "Authorization":localStorage.getItem('accesstoken')
+                    }
+                })  
+
+            // adding card to null card List
+
+            let newlistarray = [JSON.parse(draggableId)];
+            // console.log("structuredarray", newlistarray);
+            const stringifyedarray = JSON.stringify(newlistarray)//[55]
+            
+
+            const destinationlists = {
+                ...destinationList,
+                card_order:stringifyedarray,
+                cards : currentList.cards.filter( el => el.card_id == draggableId)
+            }
+
+            // console.log("endList", destinationlists);
+
+            // storing card order
+            
+            const othercardorder = await axios.post(`http://localhost:5000/list/updatecardorder`,{
+                id :destination.droppableId, 
+                cardOrder: stringifyedarray
+                },{
+                    headers:{
+                        "Authorization":localStorage.getItem('accesstoken')
+                    }
+                })
+
+            //updating listId
+            const updatecardId = await axios.post(`http://localhost:5000/card/cardinterchange`,{
+                id :draggableId, 
+                listId: destination.droppableId
+                },{
+                    headers:{
+                        "Authorization":localStorage.getItem('accesstoken')
+                    }
+                })
+        
+                const updatedlistdata = crddata.filter( el => el.list_id != source.droppableId && destination.draggableId);
+
+                updatedlistdata.unshift(destinationlists);
+                updatedlistdata.unshift(currentlists);
+                // console.log("updatedList", updatedlistdata);
+
+                dispatch(setcarddataredux(updatedlistdata));
+                return;
+
+            // const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
+            //     headers:{
+            //         "Authorization":localStorage.getItem('accesstoken')
+            //     }
+            // })
+            // const list = currentboardlists.data[0].list;
+            //     dispatch(setcarddataredux(list));
+            
+        }else{
+
+            //existing to existing
+
+            let currentcardOrder = JSON.parse(currentList.card_order);
+            currentcardOrder.splice(source.index, 1);//[56,57]
+
+            const currentlists = {
+                ...currentList,
+                card_order : JSON.stringify(currentcardOrder),
+
+            }
+            console.log("startList", currentlists);
+
+            const currentupdatecardorder = await axios.post(`http://localhost:5000/list/updatecardorder`,{
+                id :source.droppableId, 
+                cardOrder: JSON.stringify(currentcardOrder)
+                },{
+                    headers:{
+                        "Authorization":localStorage.getItem('accesstoken')
+                    }
+                })  
+
+            let destinationcardorder = JSON.parse(destinationList.card_order);
+            destinationcardorder.splice(destination.index, 0, JSON.parse(draggableId));
+
+            const [removedcard] = currentList.cards;
+            destinationList.cards.push(removedcard)
+            console.log("removedcard",removedcard);
+            const destinationlists = {
+                ...destinationList,
+                card_order:JSON.stringify(destinationcardorder),
+            }
+
+            console.log("destinationList", destinationList);
+
+            const destinationupdatecardorder = await axios.post(`http://localhost:5000/list/updatecardorder`,{
+                id :destination.droppableId, 
+                cardOrder: JSON.stringify(destinationcardorder)
+                },{
+                    headers:{
+                        "Authorization":localStorage.getItem('accesstoken')
+                    }
+                })
+
+            const updatecardId = await axios.post(`http://localhost:5000/card/cardinterchange`,{
+                id :draggableId, 
+                listId: destination.droppableId
+                },{
+                    headers:{
+                        "Authorization":localStorage.getItem('accesstoken')
+                    }
+                })
+                //
+            
+                const updatedlistdata = crddata.filter( el => el.list_id != source.droppableId && destination.draggableId);
+
+                updatedlistdata.splice(source.index, 0, currentlists);
+                updatedlistdata.splice(destination.index, 0,destinationlists)
+                console.log("updatedList", updatedlistdata);
+
+                dispatch(setcarddataredux(updatedlistdata));
+                return;
+            // const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
+            //     headers:{
+            //         "Authorization":localStorage.getItem('accesstoken')
+            //     }
+            // })
+            // const list = currentboardlists.data[0].list;
+            //     dispatch(setcarddataredux(list));  
+        }
+
     }
 
     //-------------------------------------------------------------
