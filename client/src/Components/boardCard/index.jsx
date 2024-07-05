@@ -14,8 +14,6 @@ const Boardcard = ({ currentboard, listId}) => {
 
     const {cardData} = useSelector(data => data);
     let [data] = cardData.filter( el => el.list_id == listId);
-
-
     
     // Card Action  Add card
 
@@ -126,65 +124,73 @@ const Boardcard = ({ currentboard, listId}) => {
     const cardOrder = JSON.parse(data.card_order);
 
     //-----------------------------------------------------------------
-    
-  return (
-    <>
-        <div className='cardbody'>
-            {data?.cards != null ?  cardOrder.map((id, index)=>{
 
-            let cardData = data.cards.filter(item => item.card_id == id)[0];
-
-            return (
-                cardData && 
-                    <Draggable key={JSON.stringify(cardData?.card_id)} draggableId={JSON.stringify(cardData?.card_id)} index={index}>
-                    {(provided) =>(
-                        <div
-                        onDoubleClick={()=>handleClickOpen(cardData)}
-                        className='cardlist'
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                        key={cardData.card_id}
+    return (
+        <>
+            <Droppable droppableId={listId}>
+                {(provided)=>(
+                    <div    className='cardbody'
+                            key={listId} 
+                            {...provided.droppableProps} 
+                            ref={provided.innerRef}>
+                        {data?.cards != null ?  cardOrder.map((id, index)=>{
+            
+                        let cardData = data.cards.filter(item => item.card_id == id)[0];
+            
+                        return (
+                            cardData && 
+                                <Draggable key={JSON.stringify(cardData?.card_id)} draggableId={JSON.stringify(cardData?.card_id)} index={index}>
+                                {(provided) =>(
+                                    <div
+                                    onDoubleClick={()=>handleClickOpen(cardData)}
+                                    className='cardlist'
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    ref={provided.innerRef}
+                                    key={cardData.card_id}
+                                    >
+                                        <Typography
+                                            onInput={(e) => handleTitleChange(cardData.card_id, e.target.innerText)}
+                                            onClick={handleTitleClick}
+                                            onBlur={()=>handleBlur(cardData)}
+                                            contenteditable='true'
+                                            variant='subtitle2'>
+                                            {cardData.card_title}
+                                        </Typography>
+                                        <CardDialog Dialogopen={Dialogopen} currentboard={currentboard} handleClose={handleClose} selectedcard={selectedcard}/>
+                                    </div>
+                                )}
+                                </Draggable> 
+                            )
+                        }) : null
+                        }
+                        <Popover
+                        open={open}
+                        id = {id}
+                        anchorEl={addnewcardpopup.state}
+                        onClose={()=> setaddnewcardpopup({state:null})}
+                        className='cardnavactions'
+                        style={{padding:'8px 0px'}}
                         >
-                            <Typography
-                                onInput={(e) => handleTitleChange(cardData.card_id, e.target.innerText)}
-                                onClick={handleTitleClick}
-                                onBlur={()=>handleBlur(cardData)}
-                                contenteditable='true'
-                                variant='p'>
-                                {cardData.card_title}
-                            </Typography>
-                            <CardDialog Dialogopen={Dialogopen} currentboard={currentboard} handleClose={handleClose} selectedcard={selectedcard}/>
-                        </div>
-                    )}
-                    </Draggable> 
-                )
-            }) : null
-            }
-            <Popover
-            open={open}
-            id = {id}
-            anchorEl={addnewcardpopup.state}
-            onClose={()=> setaddnewcardpopup({state:null})}
-            className='cardnavactions'
-            style={{padding:'8px 0px'}}
-            >
-                <Grid className='listinputpopup' >
-                    <TextField onChange={(e)=>{setnewcardinput(e.target.value)}}/>
-                    <Grid className='listinputpopupaction'>
-                        <Button onClick={()=>addnewcardHandler(addnewcardpopup.id)}>Add Card</Button>
-                        <Cross onClick={()=>setaddnewcardpopup(null)}/>
-                    </Grid>
+                            <Grid className='listinputpopup' >
+                                <TextField onChange={(e)=>{setnewcardinput(e.target.value)}}/>
+                                <Grid className='listinputpopupaction'>
+                                    <Button onClick={()=>addnewcardHandler(addnewcardpopup.id)}>Add Card</Button>
+                                    <Cross onClick={()=>setaddnewcardpopup(null)}/>
+                                </Grid>
+                            </Grid>
+                        </Popover>
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+            <Grid>                                   
+                <Grid className='addlist' onClick={(e)=>{setaddnewcardpopup({state:e.currentTarget,id:data.list_id})}}>
+                    <h6>+ Add a card</h6>
                 </Grid>
-            </Popover>
-        </div>
-        <Grid>                                   
-            <Grid className='addlist' onClick={(e)=>{setaddnewcardpopup({state:e.currentTarget,id:data.list_id})}}>
-                <h6>+ Add a card</h6>
             </Grid>
-        </Grid>
-    </>
-  )
-}
+        </>
+      )
+    }
 
 export default Boardcard

@@ -221,8 +221,6 @@
 .cardbody{
     padding: 2px 7px;
     display: flex;
-    /* min-height: min-content;
-    max-height: 300px; */
     flex-direction: column;
     gap: 8px;
     overflow: hidden;
@@ -237,6 +235,10 @@
     border-radius: 12px;
     background-color: white;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.cardlist h6{
+    width: fit-content;
 }
 
 .addlist{

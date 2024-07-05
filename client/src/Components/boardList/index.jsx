@@ -24,7 +24,7 @@ const List = ({ currentboard }) => {
       const [newlistdata, setnewlistdata] = useState('');
       const [newlistpopup, setnewlistpopup] = useState(false);
       const createListHandler = async() =>{
-          console.log(newlistdata, currentboard.id);
+          console.log("data",newlistdata, currentboard.id);
           const newlist = await axios.post(`http://localhost:5000/list/createlist`,{
               listTitle:newlistdata,
               boardId:currentboard.id
@@ -33,7 +33,8 @@ const List = ({ currentboard }) => {
                   "Authorization":localStorage.getItem('accesstoken')
               }
           });
-  
+
+          debugger
           const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
               headers:{
                   "Authorization":localStorage.getItem('accesstoken')
@@ -118,78 +119,76 @@ const List = ({ currentboard }) => {
     
     // console.log(crddata);
 
-  return (
-    <div className='boardinner'>
-                {crddata[0]?.list_title != null && crddata.length > 0 ? crddata.map((data, index)=>(
-                    <Droppable droppableId={JSON.stringify(data.list_id)}>
-                        {(provided)=>(
-                        <div className='boardcard' key={JSON.stringify(data.list_id)} {...provided.droppableProps} ref={provided.innerRef}>
-                            <div className='cardnav' >
-                                <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                                    <Typography 
-                                        onInput={(e) => handleTitleChange(data.list_id, e.target.innerText)}
-                                        onClick={handleTitleClick}
-                                        onBlur={()=>handleBlur(data.list_id)}
-                                        contenteditable="true"
-                                        variant='h6'>
-                                        {data.list_title}
-                                    </Typography>
-                                        <span style={{fontSize:'14px'}}>({data.cards ? data.cards.length : 0})</span>
-                                </div>
-                                { 
-                                    <Grid>
-                                        <PopupState variant="popover" popupId="demo-popup-popover" >
-                                            {(popupState) => (
-                                                <div >
-                                                    <span onClick={()=>{setcardactionpopup(!cardactionpopup)}}  {...bindTrigger(popupState)}>
-                                                        <Dots/>
-                                                    </span>
-                                                    <Popover
-                                                        {...bindPopover(popupState)}
-                                                        anchorOrigin={{
-                                                        vertical: 'bottom',
-                                                        horizontal: 'center',
-                                                        }}
-                                                        transformOrigin={{
-                                                        vertical: 'top',
-                                                        horizontal: 'center',
-                                                        }}
-                                                        className='cardnavactions'
-                                                        style={{padding:'8px 0px'}}
-                                                    >
-                                                    <div className='cardnavactions'>
-                                                        <p onClick={()=>{console.log(data.list_id)}}>Add Card</p>
-                                                        <p onClick={()=>{listdeleteHandler(data.list_id)}}>Delete List</p>
+    return (
+        <div className='boardinner'>
+                    {crddata[0]?.list_title != null && crddata.length > 0 ? crddata.map((data, index)=>(
+
+                            <div
+                                className='boardcard' 
+                                key={JSON.stringify(data.list_id)} >
+                                <div className='cardnav'>
+                                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+                                        <Typography 
+                                            onInput={(e) => handleTitleChange(data.list_id, e.target.innerText)}
+                                            onClick={handleTitleClick}
+                                            onBlur={()=>handleBlur(data.list_id)}
+                                            contenteditable="true"
+                                            variant='h6'>
+                                            {data.list_title}
+                                        </Typography>
+                                            <span style={{fontSize:'14px'}}>({data.cards ? data.cards.length : 0})</span>
+                                    </div>
+                                    { 
+                                        <Grid>
+                                            <PopupState variant="popover" popupId="demo-popup-popover" >
+                                                {(popupState) => (
+                                                    <div >
+                                                        <span onClick={()=>{setcardactionpopup(!cardactionpopup)}}  {...bindTrigger(popupState)}>
+                                                            <Dots/>
+                                                        </span>
+                                                        <Popover
+                                                            {...bindPopover(popupState)}
+                                                            anchorOrigin={{
+                                                            vertical: 'bottom',
+                                                            horizontal: 'center',
+                                                            }}
+                                                            transformOrigin={{
+                                                            vertical: 'top',
+                                                            horizontal: 'center',
+                                                            }}
+                                                            className='cardnavactions'
+                                                            style={{padding:'8px 0px'}}
+                                                        >
+                                                        <div className='cardnavactions'>
+                                                            <p onClick={()=>{console.log(data.list_id)}}>Add Card</p>
+                                                            <p onClick={()=>{listdeleteHandler(data.list_id)}}>Delete List</p>
+                                                        </div>
+                                                        </Popover>
                                                     </div>
-                                                    </Popover>
-                                                </div>
-                                            )}
-                                        </PopupState>
-                                    </Grid>
-                                }
+                                                )}
+                                            </PopupState>
+                                        </Grid>
+                                    }
+                                </div> 
+                                <Boardcard currentboard={currentboard} listId={JSON.stringify(data.list_id)}/>
                             </div> 
-                            <Boardcard currentboard={currentboard} listId={JSON.stringify(data.list_id)}/>
-                            {provided.placeholder}
-                        </div> 
-                        )}
-                    </Droppable>
-                )) : <></>}
-                <div className='listaction'>
-                    <Grid className='listbutton' onClick={()=>setnewlistpopup(!newlistpopup)}>
-                        <span>{crddata[0]?.list_title != null && crddata.length > 1 ? '+ Add another list' : '+ Add list'}</span>
-                    </Grid>
-                    { newlistpopup &&   
-                        <Grid className='listinputpopup'>
-                            <TextField onChange={(e)=>{setnewlistdata(e.target.value)}}/>
-                            <Grid className='listinputpopupaction'>
-                                <Button onClick={createListHandler}>Add List</Button>
-                                <Cross onClick={()=>setnewlistpopup(!newlistpopup)}/>
-                            </Grid>
+                    )) : <></>}
+                    <div className='listaction'>
+                        <Grid className='listbutton' onClick={()=>setnewlistpopup(!newlistpopup)}>
+                            <span>{crddata[0]?.list_title != null && crddata.length > 1 ? '+ Add another list' : '+ Add list'}</span>
                         </Grid>
-                    }
+                        { newlistpopup &&   
+                            <Grid className='listinputpopup'>
+                                <TextField onChange={(e)=>{setnewlistdata(e.target.value)}}/>
+                                <Grid className='listinputpopupaction'>
+                                    <Button onClick={createListHandler}>Add List</Button>
+                                    <Cross onClick={()=>setnewlistpopup(!newlistpopup)}/>
+                                </Grid>
+                            </Grid>
+                        }
+                    </div>
                 </div>
-            </div>
-  )
-}
+      )
+    }
 
 export default List
