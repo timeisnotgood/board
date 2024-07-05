@@ -61,13 +61,6 @@ const cardInterchange = async(req, res)=>{
         const updatedChange = await knex('card').where({"id" : id}).update({
             "list_id" : listId
         })
-        const listOrder = await knex('list').select('card_order').where({"id":id});
-        const array = JSON.parse(listOrder[0].card_order); 
-        const updatedarray = [id, ...array];
-        console.log(updatedarray);
-        const updatelistOrder = await knex('list').where({"id":id}).update({
-            "card_order" : JSON.stringify(updatedarray)
-        })
         res.status(200).json(updatedChange);
     } catch (error) {
         res.json(error);

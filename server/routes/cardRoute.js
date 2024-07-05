@@ -7,7 +7,7 @@ const authenticate = require('../auth');
 route.get('/getcard', authenticate, cardController.getCard);
 route.post('/createcard', authenticate, cardController.createCard);
 route.put('/updatecard', authenticate, cardController.updateCard);
-route.put('/cardinterchange', authenticate, cardController.cardInterchange);
+route.post('/cardinterchange', authenticate, cardController.cardInterchange);
 route.delete('/deletecard/:id', authenticate, cardController.deleteCard);
 
 //-------------------------------------------------------------------------------
