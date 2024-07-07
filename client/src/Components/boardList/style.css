@@ -1,0 +1,7 @@
+.cardwrapper{
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    gap: 10px;
+    overflow-x: scroll;
+}

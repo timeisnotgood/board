@@ -128,7 +128,7 @@ const Boardcard = ({ currentboard, listId}) => {
 
     return (
         <>
-            <Droppable droppableId={listId}>
+            <Droppable droppableId={listId} type='card'>
                 {(provided)=>(
                     <div    className='cardbody'
                             key={listId} 
