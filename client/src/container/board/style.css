@@ -50,6 +50,10 @@
     padding: 0px 0px;
 }
 
+.MuiPopover-root .MuiPaper-rounded{
+    border-radius: 12px;
+}
+
 .boardlist{
     background-color: white;
     padding: 5px 15px;
@@ -57,15 +61,53 @@
     right: 60px;
     border-radius: 12px;
     top: 100px;
-    min-width: 100px;
+    min-width: 190px;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-
 }
 
 .boardtitle{
     color: #778599!important;
     font-size: 15px;
     font-weight: 200;
+}
+
+
+.brdtitle{
+    min-width: min-content;
+}
+
+.brdtitle .MuiInput-underline:before{
+    border-bottom: none;
+
+    min-width: min-content;
+}
+
+.brdtitle .MuiInput-underline:hover:not(.Mui-disabled):before{
+    border-bottom: none;
+    min-width: min-content;
+
+}
+
+.brdtitle .MuiInput-underline:after{
+    border-bottom: none;
+    min-width: min-content;
+}
+
+.boardlist .MuiButtonBase-root{
+    border-radius: 12px;
+    text-align: center;
+    min-width: min-content;
+    display: block;
+    padding: 4px 0px !important;
+    margin: 4px;
+}
+
+
+
+.brdtitle .MuiInputBase-input{
+    width: min-content !important;
+    border: 1px solid black;
+
 }
 
 .addboardlist{
@@ -135,16 +177,31 @@
     box-sizing: border-box;
 }
 
+.MuiFormControl-root{
+    border-radius: 7px !important;
+
+}
+.MuiOutlinedInput-root{
+    border-radius: 7px !important;
+    padding: 0px 5px !important;
+}
+
 .boardselect input{
     height: 30px;
-    width: 80px;
-    border-radius: 15px;
+    width: 100px;
+    border-radius: 20px;
     background-color: white;
     cursor: pointer;
     padding: 0px 4px;
     text-align: center;
     color: #64748B;
     position: relative;
+}
+
+.boardselect input::placeholder{
+    color: black !important;
+    font-size: 13px;
+    font-family: Inter, sans-serif !important;
 }
 
 .deletepopup{
@@ -158,16 +215,17 @@
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    overflow-x:scroll ;
 }
 
 .boardinner{
-    height: 100%;
-    width: 100%;
+    height: min-content;
+    min-width: min-content;
     display: flex;
     flex-direction: row;
     gap: 15px;
-    overflow: scroll;
-
 }
 
 .boardcard{

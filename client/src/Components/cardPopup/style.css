@@ -194,3 +194,13 @@
 .MuiPaper-root MuiPopover-paper MuiPaper-elevation8 MuiPaper-rounded{
     box-shadow: none;
 }
+
+
+.attachmentCon{
+    display: flex;
+    flex-direction: 'row';
+    gap: 10px;
+    align-items: center;
+    padding: 5px;
+    min-height: 40px;
+}

@@ -86,17 +86,7 @@ export const Login = () => {
       localStorage.setItem('accesstoken', token)
       const userdata = jwtDecode(token);
       dispatch(setaccesstoken(userdata.user))
-
-    //   const userrelatedboards = await axios.get(`http://localhost:5000/board/getboard/${userdata.user.id}`,{
-    //   headers:{
-    //     'Content-Type': 'application/json',
-    //     'Access-Control-Allow-Origin': '*',
-    //     'Authorization' : token
-    //   }
-    // })
-
-    // dispatch(setboarddata(userrelatedboards.data))
-    navigate("/")
+      navigate("/")
     })
   };
 

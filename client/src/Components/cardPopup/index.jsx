@@ -10,6 +10,7 @@ import { ReactComponent as Usericon } from './svg/User.svg'
 import { makeStyles } from '@mui/styles';
 import { ReactComponent as Sendarrow } from './svg/Sendarrow.svg'
 import { ReactComponent as Deletesvg } from './svg/delete.svg'
+import { ReactComponent as Attachment } from './svg/Attachment.svg'
 
 
 import React, { useEffect, useState } from 'react'
@@ -59,6 +60,7 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard, currentboard}) => {
 
     // Description & Cmt
 
+    const [attachment, setAttachement] = useState(false);
     const [collapse, setCollapse] = useState(false);
     const [cmtcollapse, setcmtCollapse] = useState(false);
     const [description, setDescription] = useState('');
@@ -216,15 +218,38 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard, currentboard}) => {
                             onClick={deletecardHandler}
                             >
                             <Deletesvg/>Delete
-                            </Grid>
-                                
+                            </Grid>  
                     </Popover>
-                    <Button className='actionbutton' variant='contained' style={{backgroundColor:'#EDEDED'}}>
-                        <Cross onClick={handleClose}/>
+                    <Button className='actionbutton' variant='contained' style={{backgroundColor:'#EDEDED'}} onClick={handleClose}>
+                        <Cross/>
                     </Button>
                 </Grid>
             </Grid>
             <Grid className='cardpopupbody'>
+                    <Grid className='attachmentCon'>
+                        <Attachment/>
+                        <Typography className='actionlable' > 
+                            Attachment 
+                            {attachment ? 
+                                <Arrowup onClick={()=>{setAttachement((p)=>!p)}}/>
+                                :
+                                <Arrowdown onClick={()=>{setAttachement((p)=>!p)}}/>
+                            }
+                        </Typography>
+                    </Grid>
+                    <Collapse in={attachment} >
+                        <Paper elevation={4} style={{padding:'10px'}}>
+                            <TextField
+                                multiline
+                                value={description}
+                                style={{width:'100%'}}
+                                onChange={(e)=>{setDescription(e.target.value)}}
+                                InputProps={{
+                                    disableUnderline: true,
+                                }}
+                            />
+                        </Paper>
+                    </Collapse>
                     <Grid className='descriptionCon'>
                         <Description/>
                         <Typography className='actionlable' > 
@@ -238,13 +263,6 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard, currentboard}) => {
                     </Grid>
                     <Collapse in={collapse} className={`descriptioncontainer ${collapse ? 'active' : ''}`}>
                         <Paper elevation={4} style={{padding:'10px'}}>
-                            {/* <Typography 
-                                style={{border:'none', outline:'none', padding:'2px', minWidth:'50px',boxShadow:'none'}}
-                                name='description' 
-                                onInput={(e)=>{setDescription(e.target.innerText)}}
-                                contentEditable='true'
-                                variant='p'
-                                >{description}</Typography> */}
                             <TextField
                                 multiline
                                 value={description}

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Grid from '@material-ui/core/Grid';
 import { Button, IconButton, TextField, Typography } from '@material-ui/core';
-// import  from '@material-ui/core/Button';
 import MailOutlinedIcon from '@material-ui/icons/MailOutlined';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Visibility from '@material-ui/icons/Visibility';
@@ -97,7 +96,6 @@ export const Signup = () => {
     const handleChange = (event) => {
       const { name, value } = event.target;
       setData({...data,[name]: value});
-      // console.log(data);
     };
   
     const handelshowpassword = () => {
@@ -123,8 +121,7 @@ export const Signup = () => {
                 <Typography className='brand' variant="h2" style={{fontSize:'22px',fontWeight:'900',overflow:'hidden'}}>
                 Sign Up for an Account
                 </Typography>
-
-{/* username */}
+                {/* username */}
                 <TextField
                     placeholder='Username'
                     variant='outlined'

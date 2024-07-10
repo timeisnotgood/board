@@ -6,64 +6,57 @@ import { ReactComponent as Dots } from './svg/dot.svg'
 import { Button, Grid, TextField, Typography } from '@material-ui/core';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setboarddataredux, setcarddataredux } from '../../redux/actions'
+import { setcurrentboarddataredux, setcarddataredux } from '../../redux/actions'
 import Boardcard from '../boardCard';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import './style.css'
 
 const List = ({ currentboard }) => {
 
-      const dispatch = useDispatch();
-      let listdata = useSelector(data => data);
-      let crddata = listdata.cardData;
-     const userData = useSelector(s=>s);
+    const dispatch = useDispatch();
 
-      // Create new List
+    let ReduxData = useSelector(data => data);
 
-      
-      const [newlistdata, setnewlistdata] = useState('');
-      const [newlistpopup, setnewlistpopup] = useState(false);
+    const usrid = ReduxData.auth.id;
+    let crddata = ReduxData.cardData;
+    let currentbrdData = ReduxData.currentboardData[0];
 
-      const createListHandler = async() =>{
-          console.log("data",newlistdata, currentboard.id);
-          const newlist = await axios.post(`http://localhost:5000/list/createlist`,{
-              listTitle:newlistdata,
-              boardId:currentboard.id
-          },{
-              headers:{
-                  "Authorization":localStorage.getItem('accesstoken')
-              }
-          });
+    // Create new List
+    
+    const [newlistdata, setnewlistdata] = useState('');
+    const [newlistpopup, setnewlistpopup] = useState(false);
 
-          const id = userData.auth.id;
+    const createListHandler = async() =>{
+        const newlist = await axios.post(`http://localhost:5000/list/createlist`,{
+            listTitle:newlistdata,
+            boardId:currentbrdData.id
+        },{
+            headers:{
+                "Authorization":localStorage.getItem('accesstoken')
+            }
+        });
 
-          const boards = await axios.get(`http://localhost:5000/board/getboard/${id}`,
-              {
-                  headers:{
-                      "Authorization":localStorage.getItem('accesstoken')
-                  }
-              }
-          );
-          dispatch(setboarddataredux(boards.data))
+        
+    const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentbrdData.id}`,{
+        headers:{
+            "Authorization":localStorage.getItem('accesstoken')
+        }
+    })
+    const board = currentboardlists.data
+    const list = currentboardlists.data[0].list;
+    dispatch(setcurrentboarddataredux(board));
+    dispatch(setcarddataredux(list));
 
-          const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
-              headers:{
-                  "Authorization":localStorage.getItem('accesstoken')
-              }
-          })
-          const list = currentboardlists.data[0].list;
-          console.log(list);
-          dispatch(setcarddataredux(list));
-          setnewlistpopup(!newlistpopup)
-          console.log(newlistdata);
-      }
+    setnewlistpopup(!newlistpopup)
+    }
+
+    //------------------------------------------------------------------------
 
     // Delete List
     
     const listdeleteHandler = async(listis)=>{
-        console.log("working",currentboard.id);
       const deletedcard = await axios.post(`http://localhost:5000/list/deletelist/${listis}`,{
-            brdid : currentboard.id
+            brdid : currentbrdData.id
         },
         {
             headers:{
@@ -72,16 +65,18 @@ const List = ({ currentboard }) => {
         })
       
 
-      const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
-          headers:{
-              "Authorization":localStorage.getItem('accesstoken')
-          }
-      })
-      
-      const list = currentboardlists.data[0].list;
-      console.log("***************",list);
-      dispatch(setcarddataredux(list));
-  }
+        const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentbrdData.id}`,{
+            headers:{
+                "Authorization":localStorage.getItem('accesstoken')
+            }
+        })
+        const board = currentboardlists.data
+        const list = currentboardlists.data[0].list;
+        dispatch(setcurrentboarddataredux(board));
+        dispatch(setcarddataredux(list));
+    }
+
+    //-----------------------------------------------------------------------------
 
     //update Board Title
 
@@ -98,14 +93,11 @@ const List = ({ currentboard }) => {
         })
     };
 
-
     const handleTitleClick = () => {
       setIsEditing(true);
     };
-
     
     const handleBlur = async() => {
-        const id = userData.auth.id;
         if (listTitles.listtitle != '') {
             const updateBoardTitle = await axios.put(`http://localhost:5000/list/updatelist`,{
                 id : listTitles.listId,
@@ -116,7 +108,7 @@ const List = ({ currentboard }) => {
                 }
             });
     
-            const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentboard.id}`,{
+            const currentboardlists = await axios.get(`http://localhost:5000/board/getallboard/${currentbrdData.id}`,{
                 headers:{
                     "Authorization":localStorage.getItem('accesstoken')
                 }
@@ -126,97 +118,106 @@ const List = ({ currentboard }) => {
             setIsEditing(false);
         }
     };
-    
-    // console.log(crddata);
+
+    //-------------------------------------------------------------------------------
+
+
+    let order = null;
+
+    if (currentbrdData?.list_order != null && (crddata[0]?.list_title != null || crddata.list_id != null)) {
+        order = JSON.parse(currentbrdData.list_order);
+    }
 
     return (
-        <Droppable
-        droppableId={JSON.stringify(currentboard.id)}
-        direction='horizontal'
-        type='list'>
+        <>
+        <Droppable droppableId={currentbrdData?.id != null ? JSON.stringify(currentbrdData.id) : '0'} direction='horizontal' type='list'>
         {(provided) =>(
             <div 
                 className='boardinner'
                 {...provided.droppableProps}
                 ref={provided.innerRef}>
-                {crddata[0]?.list_title != null && crddata.length > 0 ? crddata.map((data, index)=>(
-                    <Draggable
-                    draggableId={JSON.stringify(data.list_id)}
-                    index={index}>
-                        {(provided)=>(
-                            <div
-                                className='boardcard' 
-                                key={JSON.stringify(data.list_id)}
-                                ref={provided.innerRef} 
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}>
-                                <div className='cardnav' >
-                                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                                        <Typography 
-                                            onInput={(e) => handleTitleChange(data.list_id, e.target.innerText)}
-                                            onClick={handleTitleClick}
-                                            onBlur={()=>handleBlur(data.list_id)}
-                                            contenteditable="true"
-                                            variant='h6'>
-                                            {data.list_title}
-                                        </Typography>
-                                            <span style={{fontSize:'14px'}}>({data.card_order ? JSON.parse(data.card_order).length : 0})</span>
-                                    </div>
-                                    { 
-                                        <Grid>
-                                            <PopupState variant="popover" popupId="demo-popup-popover" >
-                                                {(popupState) => (
-                                                    <div >
-                                                        <span onClick={()=>{setcardactionpopup(!cardactionpopup)}}  {...bindTrigger(popupState)}>
-                                                            <Dots/>
-                                                        </span>
-                                                        <Popover
-                                                            {...bindPopover(popupState)}
-                                                            anchorOrigin={{
-                                                            vertical: 'bottom',
-                                                            horizontal: 'center',
-                                                            }}
-                                                            transformOrigin={{
-                                                            vertical: 'top',
-                                                            horizontal: 'center',
-                                                            }}
-                                                            className='cardnavactions'
-                                                            style={{padding:'8px 0px'}}
-                                                        >
-                                                        <div className='cardnavactions'>
-                                                            <p onClick={()=>{console.log(data.list_id)}}>Add Card</p>
-                                                            <p onClick={()=>{listdeleteHandler(data.list_id)}}>Delete List</p>
+                {currentbrdData?.list_order && crddata[0]?.list_title != null && crddata[0]?.list_id != null  ? order.map((id, index)=>{
+                    let [data] = crddata.filter( data => data.list_id == id)
+                    return(
+                        <Draggable
+                        draggableId={JSON.stringify(data?.list_id)}
+                        key={JSON.stringify(data?.list_id)}
+                        index={index}>
+                            {(provided)=>(
+                                <div
+                                    className='boardcard' 
+                                    key={data?.list_id}
+                                    ref={provided.innerRef} 
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}>
+                                    <div className='cardnav' >
+                                        <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+                                            <Typography
+                                                onInput={(e) => handleTitleChange(data?.list_id, e.target.innerText)}
+                                                onClick={handleTitleClick}
+                                                onBlur={()=>handleBlur(data?.list_id)}
+                                                contenteditable="true"
+                                                variant='h6'>
+                                                {data?.list_title}
+                                            </Typography>
+                                                <span style={{fontSize:'14px'}}>({data?.card_order ? JSON.parse(data.card_order).length : 0})</span>
+                                        </div>
+                                        { 
+                                            <Grid>
+                                                <PopupState variant="popover" popupId="demo-popup-popover" >
+                                                    {(popupState) => (
+                                                        <div >
+                                                            <span onClick={()=>{setcardactionpopup(!cardactionpopup)}}  {...bindTrigger(popupState)}>
+                                                                <Dots/>
+                                                            </span>
+                                                            <Popover
+                                                                {...bindPopover(popupState)}
+                                                                anchorOrigin={{
+                                                                vertical: 'bottom',
+                                                                horizontal: 'center',
+                                                                }}
+                                                                transformOrigin={{
+                                                                vertical: 'top',
+                                                                horizontal: 'center',
+                                                                }}
+                                                                className='cardnavactions'
+                                                                style={{padding:'8px 0px'}}
+                                                            >
+                                                            <div className='cardnavactions'>
+                                                                <p onClick={()=>{listdeleteHandler(data.list_id)}}>Delete List</p>
+                                                            </div>
+                                                            </Popover>
                                                         </div>
-                                                        </Popover>
-                                                    </div>
-                                                )}
-                                            </PopupState>
-                                        </Grid>
-                                    }
+                                                    )}
+                                                </PopupState>
+                                            </Grid>
+                                        }
+                                    </div> 
+                                        <Boardcard currentboard={currentboard} listId={JSON.stringify(data?.list_id)}/>
                                 </div> 
-                                    <Boardcard currentboard={currentboard} listId={JSON.stringify(data.list_id)}/>
-                            </div> 
-                        )}
-                    </Draggable>
-                )) : <></>}
-                <div className='listaction'>
-                    <Grid className='listbutton' onClick={()=>setnewlistpopup(!newlistpopup)}>
-                        <span>{crddata[0]?.list_title != null && crddata.length > 1 ? '+ Add another list' : '+ Add list'}</span>
-                    </Grid>
-                    { newlistpopup &&   
-                        <Grid className='listinputpopup'>
-                            <TextField onChange={(e)=>{setnewlistdata(e.target.value)}}/>
-                            <Grid className='listinputpopupaction'>
-                                <Button onClick={createListHandler}>Add List</Button>
-                                <Cross onClick={()=>setnewlistpopup(!newlistpopup)}/>
-                            </Grid>
-                        </Grid>
-                    }
-                </div>
+                            )}
+                        </Draggable>
+                    )
+                }) : <></>}                    
             {provided.placeholder}
             </div>
         )}
         </Droppable>
+        <div className='listaction'>
+            <Grid className='listbutton' onClick={()=>setnewlistpopup(!newlistpopup)}>
+                <span>{crddata[0]?.list_title != null && crddata.length > 1 ? '+ Add another list' : '+ Add list'}</span>
+            </Grid>
+            { newlistpopup &&   
+                <Grid className='listinputpopup'>
+                    <TextField onChange={(e)=>{setnewlistdata(e.target.value)}}/>
+                    <Grid className='listinputpopupaction'>
+                        <Button onClick={createListHandler}>Add List</Button>
+                        <Cross onClick={()=>setnewlistpopup(!newlistpopup)}/>
+                    </Grid>
+                </Grid>
+            }
+        </div>
+        </>
 
       )
     }

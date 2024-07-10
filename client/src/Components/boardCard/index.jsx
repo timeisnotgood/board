@@ -11,12 +11,11 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 const Boardcard = ({ currentboard, listId}) => {
 
     const dispatch = useDispatch();
-
     const {cardData} = useSelector(data => data);
     let [data] = cardData.filter( el => el.list_id == listId);
-    // console.log(data);
     
-    // Card Action  Add card
+
+    //  Add card
 
     const [addnewcardpopup, setaddnewcardpopup] = useState({state:null, id:''});
     const [newcardinput, setnewcardinput] = useState('');
@@ -122,7 +121,11 @@ const Boardcard = ({ currentboard, listId}) => {
         setDialogOpen(false);
     };
 
-    const cardOrder = JSON.parse(data.card_order);
+    let cardOrder = null;
+
+    if(data?.card_order != null){
+        cardOrder = JSON.parse(data.card_order);
+    }
 
     //-----------------------------------------------------------------
 

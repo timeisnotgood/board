@@ -23,9 +23,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(()=>{
-    // console.log("home route*************");
     const token = localStorage.getItem('accesstoken');
-    // console.log("tokenn*************",token);
     if (token == null) {
       console.log("token invalid push to login",token);
       navigate('/login');
@@ -34,7 +32,6 @@ const Dashboard = () => {
 
   // user data --------------------
   const userdata = useSelector(s => s)
-  // console.log("****************", userdata);
 
   //-------------------------------
 
@@ -103,14 +100,6 @@ const Dashboard = () => {
             <Grid item xs={12} sm={6} className='bodycontainer'>
               <Grid className='containertext'>
                 <div className='fourthcontainer'>
-                {/* <TextField
-                    value={"kjhkj"}
-                    variant='outlined'
-                    margin='normal'
-                    style={{padding:'0px',margin:'0px', width:'max-content'}}
-                    autoFocus
-                    className={classes.inputField}
-                    /> */}
                     Comming Soon....
                 </div>
               </Grid>

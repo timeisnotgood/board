@@ -1,4 +1,4 @@
-import { set_acccess_token, clear_acccess_token, set_board_data, clear_board_data, set_card_data } from './actions'
+import { set_acccess_token, clear_acccess_token, set_board_data, clear_board_data, set_card_data, set_currentboard_data, clear_currentboard_data } from './actions'
 
 const tokenDatastate = {
     "username" : null,
@@ -9,10 +9,18 @@ const tokenDatastate = {
 const brddata = {
     "brd_title" : null,
     "created_at" : null,
+    "id" : null,
     "list" : null,
     "list_order" : null
 }
 
+const currentbrddata = {
+    "brd_title" : null,
+    "created_at" : null,
+    "id" : null,
+    "list" : null,
+    "list_order" : null
+}
 
 const carddata = {
     "cards": null,
@@ -33,6 +41,8 @@ const tokenReducer = (state = tokenDatastate, action) =>{
     }
 }
 
+// boards Reducer
+
 const boardReducer = (state = brddata, action) =>{
     switch (action.type) {
         case set_board_data:
@@ -44,6 +54,21 @@ const boardReducer = (state = brddata, action) =>{
     }
 }
 
+// current boards Reducer
+
+const currentboardReducer = (state = currentbrddata, action) =>{
+    switch (action.type) {
+        case set_currentboard_data:
+            return action.payload
+        case clear_currentboard_data:
+            return null
+        default:
+            return state;
+    }
+}
+
+// card Reducer
+
 const cardReducer = (state = carddata, action) =>{
     switch (action.type){
         case set_card_data:
@@ -54,4 +79,4 @@ const cardReducer = (state = carddata, action) =>{
             return state
     }
 }
-export {tokenReducer, boardReducer, cardReducer};
+export {tokenReducer, boardReducer, currentboardReducer, cardReducer};
