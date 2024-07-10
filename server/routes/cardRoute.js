@@ -2,6 +2,8 @@ const express = require('express');
 const route = express.Router();
 const cardController = require("../controller/cardController");
 const authenticate = require('../auth');
+const multer = require('multer');
+const upload = multer({limits : {fileSize : 5000000}})
 
 // card Routes
 route.get('/getcard', authenticate, cardController.getCard);
@@ -10,6 +12,10 @@ route.put('/updatecard', authenticate, cardController.updateCard);
 route.post('/cardinterchange', authenticate, cardController.cardInterchange);
 route.delete('/deletecard/:id', authenticate, cardController.deleteCard);
 
+//-------------------------------------------------------------------------------
+
+// Image upload
+route.post('/upload',upload.any(),cardController.uploadImage)
 //-------------------------------------------------------------------------------
 
 // discussion  Route

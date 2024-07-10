@@ -1,5 +1,33 @@
-const { json } = require('express');
-const knex = require('../knex/knexfile')
+const knex = require('../knex/knexfile');
+const multer = require('multer');
+
+
+// Storage
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) =>{
+        cb(null, '/');
+    },
+    filename: (req, file, cb) =>{
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({storage : storage});
+
+// upload image
+
+const uploadImage = async(req, res)=>{
+
+    if (!req.files) {
+        console.log("No File uploaded !");
+    } else {
+        console.log(req.files);
+        res.status(200).json({"file":req.files});
+        return;
+    }
+    return;
+};
 
 // card Controles
 
@@ -218,7 +246,7 @@ const deleteComment = async(req, res)=>{
 
 module.exports = { getCard, createCard, updateCard, deleteCard, cardInterchange,
                     getComment, createComment, updateComment, deleteComment,
-                    getdiscussion, createDiscussion
+                    getdiscussion, createDiscussion, upload, uploadImage
 };
 
 

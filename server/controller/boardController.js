@@ -80,6 +80,22 @@ const getBoard = async(req, res) =>{
   }
 }
 
+const singleboard = async(req, res) =>{
+    try {
+        const {id} = req.params;
+        console.log(id);
+        const singleboard = await knex('board as brd')
+        .where({"id":id})
+        .select("brd.brd_title",
+            "brd.id"
+        )
+
+        res.status(200).json(singleboard);
+    } catch (error) {
+        res.json(error);
+    }
+}
+
 const createBoard = async(req, res)=>{
     try {
         const {boardTitle, userId} = req.body;
@@ -174,4 +190,4 @@ const updateListOrder = async(req, res)=>{
 }
 
 
-module.exports = { getBoard, createBoard, updateBoard, deleteBoard, updateListOrder, getallBoards };
+module.exports = { getBoard, createBoard, updateBoard, deleteBoard, updateListOrder, getallBoards, singleboard };
