@@ -1,0 +1,79 @@
+.maincont{
+    height: 100vh;
+    /* background-color: #080e1c ; */
+    overflow: hidden;
+}
+
+.formcont{
+    /* border: 1px solid black; */
+    /* margin-top: 60px; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 700px;
+}
+
+.card{
+    /* border: 1px solid black; */
+    height: 500px;
+    width: 520px;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+.brand{
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.input{
+    width: 400px;
+}
+
+/* Hide the eye icon on WebKit browsers (Chrome, Safari) */
+input[type="password"]::-webkit-textfield-decoration-container {
+    display: none;
+}
+
+/* Hide the eye icon on Firefox */
+input[type="password"]::-moz-textfield-decoration-container {
+    display: none;
+}
+
+/* Hide the eye icon on Microsoft Edge and IE */
+input[type="password"]::-ms-reveal {
+    display: none;
+}
+
+/* Additional styles to ensure the input field hides the eye icon */
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}
+
+input[type="password"] {
+    -webkit-text-security: disc;
+}
+
+
+/* .signupbtn{
+    width: 400px;
+    background-color: #2563EB;
+    color: aliceblue;
+    border-radius: 7px;
+    padding: 13px;
+    font-size: 17px;
+    font-weight: 700;
+    text-transform: inherit;
+} */

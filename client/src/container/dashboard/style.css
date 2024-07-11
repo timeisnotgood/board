@@ -1,0 +1,95 @@
+.maincontainer{
+    /* border: 1px solid black; */
+    height: 100%;
+}
+
+.subcontainer{
+    /* border: 1px solid black; */
+    width: 100%;
+    height: 100%;
+    background-color: #F4F6F9;
+    display: flex;
+    flex-direction: column;
+}
+
+.body{
+    /* border: 1px solid black; */
+    position: relative;
+    margin-top: 5px;
+    height: 90%;
+    padding: 5px;
+}
+
+.bodycontainer{
+    /* border: 1px solid black; */
+    padding: 10px;
+    overflow: hidden;
+    height: 250px;
+}
+
+.containertext{
+    /* border: 1px solid black; */
+    height: 100%;
+    border-radius: 12px;
+    background-color: white;
+    /* box-sizing: border-box; */
+    padding: 5px;
+    overflow: hidden;
+}
+
+.firstcontainer{
+    /* border: 1px solid black; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #5351FC;
+    /* color: linear-gradient(90deg, #5351FC 0%, #19A9FC 100%); */
+}
+
+.secondcontainer{
+    padding: 5px 25px;
+}
+
+.secondcontainer h4{
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.secondcontainer p{
+    font-size: 20px;
+}
+
+.thirdcontainer{
+    padding: 0px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.thirdcontainer h4{
+    font-weight: 600;
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.648);
+}
+
+.thirdcontainer p{
+    margin-left: 20px;
+    color: rgba(128, 128, 128, 0.733);
+    font-weight: 700;
+}
+
+.fourthcontainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 30px;
+    height: 100%;
+}
+
+.test div input{
+    width: fit-content;
+    background-color: #F4F6F9;
+}

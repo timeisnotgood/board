@@ -1,0 +1,119 @@
+.navbar{
+    /* border: 1px solid black; */
+    background-color: white;
+    padding: 0px 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    box-shadow:  0 1px 2px 0 rgb(0 0 0 / 0.05);
+} 
+
+.dasbutton{
+    border-radius: 12px !important;
+    text-transform: inherit !important;
+    color: #64748B !important;
+    /* stroke: #64748B;
+    fill: #64748B; */
+}
+
+/* .logotext{
+    display: none;
+} */
+
+/* .dashicon{
+    color: #64748B;
+} */
+
+/* .logospan.active{
+    color: #1976d2 !important;
+    fill: #1976d2 !important;
+    stroke: #1976d2;
+} */
+
+.logospan{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+
+
+.dasbutton:hover {
+    background-color: rgba(25, 118, 210, 0.08);
+  }
+  
+.dasbutton.active {
+background-color: rgba(25, 118, 210, 0.08);
+border-color: #1976d2;
+color: #1976d2 !important;
+}
+
+
+.iconpath.active{
+    stroke: inherit;
+}
+
+.setting{
+    /* border: 1px solid black; */
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: end;
+}
+
+
+.dropdown{
+    width: 230px;
+    height: 94px;
+    padding: 15px 13px;
+    background-color: white;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.innerdropdown{
+    /* border: 1px solid black; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 50px;
+    gap: 20px;
+    padding: 1px 12px;
+    background-color: #F4F6F9;
+    border-radius: 12px;
+}
+
+.userdata h6{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+.userdata p{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: #0F172A;
+}
+
+.innerthirdcontainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+@media (max-width: 500px) {
+    .logotext{
+      display: none;
+    }
+  }

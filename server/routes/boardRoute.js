@@ -1,10 +1,14 @@
 const express = require('express');
 const route = express.Router();
-const { getBoard, createBoard, updateBoard, deleteBoard } = require('../controller/boardController')
+const boardController = require('../controller/boardController');
+const authenticate = require('../auth');
 
-route.get('/getboard', getBoard);
-route.post('/createboard', createBoard)
-route.put('/updateboard', updateBoard)
-route.delete('/deleteboard', deleteBoard)
+route.get('/getallboard/:id', authenticate,boardController.getallBoards);
+route.get('/getsingleboard/:id', authenticate,boardController.singleboard);
+route.get('/getboard/:id', authenticate, boardController.getBoard);
+route.post('/createboard', authenticate, boardController.createBoard);
+route.put('/updateboard', authenticate, boardController.updateBoard);
+route.post('/updatelistorder', authenticate,boardController.updateListOrder);
+route.delete('/deleteboard/:id', authenticate,boardController.deleteBoard);
 
 module.exports = route
