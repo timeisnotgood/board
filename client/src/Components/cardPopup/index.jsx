@@ -1,4 +1,4 @@
-import { Button, Collapse, Dialog, DialogContent, DialogContentText, Grid, InputLabel, Paper, Popover, TextField, Typography, useTheme } from '@material-ui/core';
+import { Button, Collapse, Dialog, DialogContent, DialogContentText, Grid, Input, InputLabel, Paper, Popover, TextField, Typography, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ReactComponent as Threedot} from './svg/threedot.svg';
 import { ReactComponent as Cross} from './svg/Cross.svg';
@@ -185,6 +185,37 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard, currentboard}) => {
     }
 
     // console.log(datacomment[0]);
+
+    //------------------------------------------------------------------------------------------
+
+    const [postImage, setPostImage] = useState({
+        myFile: "",
+      });
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("File ->>>",postImage);
+    };
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+            resolve(fileReader.result);
+        };
+        fileReader.onerror = (error) => {
+            reject(error);
+        };
+        });
+    };
+
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        const base64 = await convertToBase64(file);
+        setPostImage({ ...postImage, myFile: base64 });
+    };
+
   return (
     <Dialog open={Dialogopen} className='cardpopupdialoug' fullScreen={fullScreen}  PaperProps={{
         style: {
@@ -239,7 +270,7 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard, currentboard}) => {
                     </Grid>
                     <Collapse in={attachment} >
                         <Paper elevation={4} style={{padding:'10px'}}>
-                            <TextField
+                            {/* <TextField
                                 multiline
                                 value={description}
                                 style={{width:'100%'}}
@@ -247,7 +278,19 @@ const CardDialog = ({Dialogopen, handleClose, selectedcard, currentboard}) => {
                                 InputProps={{
                                     disableUnderline: true,
                                 }}
-                            />
+
+                            /> */}
+                            <form onSubmit={handleSubmit}>
+                                <input
+                                type="file"
+                                label="Image"
+                                name="myFile"
+                                accept=".jpeg, .png, .jpg"
+                                onChange={(e) => handleFileUpload(e)}
+                                />
+
+                                <button>Submit</button>
+                            </form>
                         </Paper>
                     </Collapse>
                     <Grid className='descriptionCon'>
